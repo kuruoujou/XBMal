@@ -1,0 +1,64 @@
+Good day!
+
+This is xbmal, the XBMC MAL updater plugin, created by Spencer Julian.
+The current version is 0.01, but no garuntees I keep that version up to date in this file.
+Well, I say plugin, but for the time being it's actually a seperate program from XBMC.
+
+How does this amazing thing work?
+Poorly. It's stil in the alpha stages, and there are a ton of bugs and refactoring,
+along with a ton of features that still need to be completed. I'll happily take on
+additional programmers...
+
+That's not what I meant!
+I know, I know. Here's how it works:
+	Step 0: Setup your users file.
+		The script needs to know your user information for XBMC and MAL, after all.
+	Step 1: A config file is generated that maps your XBMC library's shows to the MAL database.
+		This is necessary because XBMC and MAL deal with shows completely differently. In addition,
+		"Season 0", or Specials, aren't supported by this plugin because MAL deals with them all
+		willy-nilly like (and the same with seasons, as well, in many instances).
+	Step 2: You run the script with the generated config file and it happily updates MAL.
+		It will only update things in "Plan to watch" or "Watching", because I see no need to touch
+		things that are "completed" right now, and it'll mess with the "dropped" and "on hold"
+		lists as well.
+
+So what do I do to make it work?
+
+zeroth, backup your MAL database using the 'export' function. Seriously. Do it.
+
+First, edit the users.example file appropriately and rename it to simply 'users'. Once you have that done...
+
+Generate a config file with the following command:
+
+xbmal.py -c [filename]
+
+Filename defaults to config, though you can name it whatever you want. An interactive menu will run you through
+each show listed in your XBMC library, and possible mappings on MAL. If your mapping isn't there, the last option
+lets you run a search for your show using your own query (it's basically the same as the myanimelist search).
+If the show it's asking about isn't an anime (or you just don't want to deal with manual searching right now),
+the second to last option will skip the show and ignore it during updates.
+
+What if I made a mistake or need to update my config file?
+
+xbmal.py -m [filename]
+
+where filename defaults to config, but needs to be the same name as you used in -c. This will list all of the
+shows in the config file for you to select from. You can then change what it maps to in the same process as above.
+When you're done, the last option will exit the program and rewrite the config file.
+
+What if I add a show or 12?
+
+Rerun the -c option, it'll only ask you about stuff that isn't in the config file.
+
+To actually run the script and happily update MAL, just run:
+
+xbmal.py [filename]
+
+where filename defaults to config, but needs to be the same name you used in -c.
+
+Keep in mind this is alpha software. There are bugs and it will probably break things. I'm sorry. I'm still working
+on it after all. That said, if you want to help, please do! All of testing, feature requests, and coding are greatly
+appreciated.
+
+Legal stuff: in the 'COPYING' file. Basically GPLv3. Also bits used from other people here and there, but I'm
+fairly certain it's all GPLv3 as well.
