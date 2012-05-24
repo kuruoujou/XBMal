@@ -83,8 +83,8 @@ def parseConfig(filename):
 def getConfiguredXBMCids(parsedConfig):
 	results = []
 	for item in parsedConfig:
-		results.append(item['xbmc'])
-	return list(set(results))
+		results.append({'xbmc':item['xbmc'], 'season':item['season']})
+	return results
 
 def manualSearch(show, season):
 	term = raw_input("MAL Search for " + show + " season " + str(season) + "> ")
@@ -112,7 +112,6 @@ def autoSearch(show, season):
 
 def modifyConfig(filename):
 	completed = parseConfig(filename)
-	completeShows = getConfiguredXBMCids(completed)
 	menu=[]
 	for item in completed:
 		menu.append({'title':xbmc.VideoLibrary.GetTVShowDetails(int(item['xbmc']))[u'tvshowdetails'][u'label'].encode('ascii', 'ignore') + " Season " + item['season'], 'id':item['xbmc'] + "," + item['season']})
@@ -138,9 +137,9 @@ def generateConfig(filename):
 	f = open(filename, 'a')
 	tvshows = xbmc.VideoLibrary.GetTVShows()[u'tvshows']
 	for tvshow in tvshows:
-		if str(tvshow[u'tvshowid']) not in completeShows:
-			seasons = xbmc.VideoLibrary.GetSeasons(tvshow[u'tvshowid'])[u'limits'][u'total']
-			for season in range(1, seasons+1):
+		seasons = xbmc.VideoLibrary.GetSeasons(tvshow[u'tvshowid'])[u'limits'][u'total']
+		for season in range(1, seasons+1):
+			if ({'xbmc':str(tvshow[u'tvshowid']), 'season':str(season)} not in completeShows):
 				episodes = xbmc.VideoLibrary.GetEpisodes(tvshow[u'tvshowid'], season)
 				exists = False
 				if u'episodes' in episodes:
