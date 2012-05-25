@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+	<!--MAL Settings needed-->
+	<string id="100">MyAnimeList Credentials</string>
+	<string id="101">Username</string>
+	<string id="102">Password</string>
+
+	<!--Notifications for errors and things-->
+	<string id="200">MAL Username or Password Invalid.</string>
+
+</strings>

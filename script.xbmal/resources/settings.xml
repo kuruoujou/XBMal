@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+	<category label="100">
+		<setting id="malUser" type="text" option="true" label="101" />
+		<setting id="malPass" type="text" option="false" label="102" />
+	</category>
+</settings>

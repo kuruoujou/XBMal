@@ -1,65 +1,23 @@
 #!/usr/bin/env python
-import xbmc, os, sys, inspect
-#Love stackoverflow. From Sorin Sbarnea, in question 279237
-cmd_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile( inspect.currentframe() ))[0]))
-if cmd_folder not in sys.path:
-	sys.path.insert(0, cmd_folder)
-from lib import myanimelist
+import xbmc, xbmcaddon, xbmcgui, os, sys, inspect
+__settings__ 	= xbmcaddon.Addon(id='script.xbmal')
+__cwd__		= __settings__.getAddonInfo('path')
+__icon__	= os.path.join(__.cwd__, "icon.png")
+__scriptname__	= "XBMAL"
 
-## Read the user file, get passwords and things.
-#Need to re-write to grab from XBMC interface
-"""
-xuser = ""
-xpassword = ""
-xserver = "localhost"
-xport = "8080"
-muser = ""
-mpassword = ""
-try:
-	f = open("users", 'r')
-except IOError as e:
-	print "Error! users file does not exist. Check the README for info."
-	quit()
-section = 0
-for line in f.readlines():
-	line = line.strip()
-	if line == "" or line[0] == "#":
-		continue #skip comments and blank lines
-	elif line == "[xbmc]":
-		section = 1
-	elif line == "[mal]":
-		section = 2
+BASE_RESOURCE_PATH = xbmc.translatePath( os.path.join(__cwd__, 'resources', 'lib' ) )
+sys.path.append(BASE_RESOURCE_PATH)
+
+import myanimelist
+
+def malLogin():
+	mal = myanimelist.MAL((str(__settings__.getSetting("malUser")), str(__settings__.getSetting("malPass")), "mal-api.com", "Basic Agent"))
+	if (mal.verify_user() == False):
+		xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,__settings__.getLocalizedString(200),10,__icon__))
+		return None
 	else:
-		if section == 0:
-			print "Users file invalid. Check the file format and try again."
-			quit()
-		items = line.split("=")
-		if section == 1:
-			if (items[0] == "username"):
-				xuser = items[1]
-			elif (items[0] == "password"):
-				xpassword = items[1]
-			elif (items[0] == "server"):
-				xserver = items[1]
-			elif (items[0] == "port"):
-				xport = items[1]
-		elif section == 2:
-			if (items[0] == "username"):
-				muser = items[1]
-			elif (items[0] == "password"):
-				mpassword = items[1]
-if (xuser == "" or xpassword == ""):
-	xbmc = jsonrpclib.Server('http://' + xserver + ':' + xport + "/jsonrpc")
-else:
-	xbmc = jsonrpclib.Server('http://' + xuser + ":" + xpassword + "@" + xserver + ":" + xport + "/jsonrpc")
-"""
-mal = myanimelist.MAL((muser, mpassword, "mal-api.com", "Basic Agent"))
-if (mal.verify_user() == False):
-	print "Error! MAL user could not be verified. Exiting..."
-	quit()
-mal.init_anime()
-a = mal.anime
-
+		mal.init_anime()
+		return mal.anime
 
 def generateMenu(message, prompt, items):
 	print message
@@ -216,6 +174,10 @@ def fullUpdate(filename):
 					
 
 if __name__ == "__main__":
+	a = malLogin()
+#	if (a != None):
+#		while not xbmc.abortRequested:
+
 	if len(sys.argv) == 2 and sys.argv[1] == "-c": #Generate default config
 		generateConfig("config")
 	elif len(sys.argv) == 3 and sys.argv[1] == "-c": #Generate custom config
