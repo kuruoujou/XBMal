@@ -3,7 +3,7 @@ import xbmc, xbmcaddon, xbmcgui, simplejson, os, sys, itertools
 from operator import itemgetter
 __settings__ 	= xbmcaddon.Addon(id='script.xbmal')
 __cwd__		= __settings__.getAddonInfo('path')
-__icon__	= os.path.join(__.cwd__, "icon.png")
+__icon__	= os.path.join(__cwd__, "icon.png")
 __scriptname__	= "XBMAL"
 
 BASE_RESOURCE_PATH = xbmc.translatePath( os.path.join(__cwd__, 'resources', 'lib' ) )
@@ -14,26 +14,6 @@ import myanimelist
 class MAL():
 	def __init__(self):
 		pass
-
-	def malLogin(self):
-		mal = myanimelist.MAL((str(__settings__.getSetting("malUser")), str(__settings__.getSetting("malPass")), "mal-api.com", "Basic Agent"))
-		if (mal.verify_user() == False):
-			xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,__settings__.getLocalizedString(200),10,__icon__))
-			xbmc.log("### [%s] - $s" % (__scriptname__,__settings__.getLocalizedString(200)), level=xbmc.LOGDEBUG)
-			return None
-		else:
-			mal.init_anime()
-			return mal.anime
-
-'''	def generateMenu(self, message, prompt, items):
-		print message
-		count = 0
-		for item in items:
-			print str(count) + ") " + item['title']
-			count = count + 1
-		selected = raw_input(prompt + " >") #Need error checking at some point...
-		print "\n\n"		
-		return items[int(selected)]['id']
 
 	def parseConfig(self, filename):
 		try:
@@ -47,75 +27,15 @@ class MAL():
 		f.close()
 		return results
 
-	def getConfiguredXBMCids(self, parsedConfig):
-		results = []
-		for item in parsedConfig:
-			results.append({'xbmc':item['xbmc'], 'season':item['season']})
-		return results
-
-	def manualSearch(self, show, season):
-		term = raw_input("MAL Search for " + show + " season " + str(season) + "> ")
-		results = []
-		for item in a.search(term.encode('ascii', 'ignore')).values():
-			results.append({'title':item['title'].encode('ascii', 'ignore'), 'id':item['id']})
-		results.append({'title':'None of the above', 'id':"%skip%"})
-		results.append({'title':'Search Again', 'id':'###'})
-		print "\n"
-		result = generateMenu("Select a result.", "Your Selection", results)
-		if (result == "###"):
-			result = manualSearch(show, season)
-		return result
-
-	def autoSearch(self, show, season):
-		results = []
-		for item in a.search(show).values():
-			results.append({'title':item['title'].encode('ascii', 'ignore'), 'id':item['id']})
-		results.append({'title':"None of the above", 'id':"%skip%"})
-		results.append({'title':"Manual Search", 'id':"###"})
-		result = generateMenu("Which show is " + show + " Season " + str(season) + "?", "Your Selection", results)
-		if (result == "###"):
-			result = manualSearch(show, season)
-		return result	
-
-	def modifyConfig(self, filename):
-		completed = parseConfig(filename)
-		menu=[]
-		for item in completed:
-			menu.append({'title':xbmc.VideoLibrary.GetTVShowDetails(int(item['xbmc']))[u'tvshowdetails'][u'label'].encode('ascii', 'ignore') + " Season " + item['season'], 'id':item['xbmc'] + "," + item['season']})
-		menu.append({'title':'Exit', 'id':'X'})
-		while 1:
-			edit = generateMenu("Which show should we modify?", "Your Selection", menu)
-			if edit == 'X':
-				 break
-			eid, eseason = edit.split(',')
-			update = autoSearch(xbmc.VideoLibrary.GetTVShowDetails(int(eid))[u'tvshowdetails'][u'label'].encode('ascii', 'ignore'), eseason)
-			for num,item in enumerate(completed):
-				if item['xbmc'] == eid and item['season'] == eseason:
-					item['mal'] = update
-					completed[num] = item
-		f = open(filename, 'w')
-		for item in completed:
-			f.write(str(item['xbmc']) + " | " + str(item['season']) + " | " + str(item['mal']) + "\n")
-		f.close()
-
-	def generateConfig(self, filename):
-		completed = parseConfig(filename)
-		completeShows = getConfiguredXBMCids(completed)
-		f = open(filename, 'a')
-		tvshows = xbmc.VideoLibrary.GetTVShows()[u'tvshows']
-		for tvshow in tvshows:
-			seasons = xbmc.VideoLibrary.GetSeasons(tvshow[u'tvshowid'])[u'limits'][u'total']
-			for season in range(1, seasons+1):
-				if ({'xbmc':str(tvshow[u'tvshowid']), 'season':str(season)} not in completeShows):
-					episodes = xbmc.VideoLibrary.GetEpisodes(tvshow[u'tvshowid'], season)
-					exists = False
-					if u'episodes' in episodes:
-						exists = True
-						show = autoSearch(tvshow[u'label'].encode('ascii', 'ignore'), season)
-					if exists is True:
-						f.write(str(tvshow[u'tvshowid']) + " | " + str(season) + " | " + str(show) + "\n")
-		f.close()'''
-		
+	def malLogin(self):
+		mal = myanimelist.MAL((str(__settings__.getSetting("malUser")), str(__settings__.getSetting("malPass")), "mal-api.com", "Basic Agent"))
+		if (mal.verify_user() == False):
+			xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,__settings__.getLocalizedString(200),10,__icon__))
+			xbmc.log("### [%s] - %s" % (__scriptname__,__settings__.getLocalizedString(200)), level=xbmc.LOGFATAL)
+			return None
+		else:
+			mal.init_anime()
+			return mal.anime
 
 	def updateMal(self, xbmc, season, mal, watchedEpisodes):
 		details = a.details(mal, 1)
@@ -159,7 +79,7 @@ class MAL():
 	def fullUpdate(self, filename):
 		xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,__settings__.getLocalizedString(300),10,__icon__))
 		showCount = 0;
-		completed = parseConfig(filename)
+		completed = self.parseConfig(filename)
 		#Most of this is from the watchlist code, because we're doing something very similar.
 		json_query = xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"VideoLibrary.GetEpisodes","params":{"properties":["tvshowid","playcount","season"], "sort": {"method":"episode"} }, "id":1}')
 		json_query = unicode(json_query, 'utf-8', errors='ignore')
@@ -183,34 +103,36 @@ class MAL():
 					for episode in season:
 						if(episode['playcount'] != 0 and episode['label'][0] != 'S'):
 							count = count + 1
-					if updateMal(int(season[0]['tvshowid']), int(season[0]['season']), int(malID), count):
+					if self.updateMal(int(season[0]['tvshowid']), int(season[0]['season']), int(malID), count):
 						showCount = showCount + 1
 		xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,str(showCount) + " " + __settings__.getLocalizedString(301),10,__icon__))
 				
 
 class XBMCPlayer( xbmc.Player ):
 	def __init__(self, *args):
-		pass
+		xbmc.Player.__init__(self)
 
 	def onPlayBackEnded( self ):
 		mal = MAL()
-		mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") )
+		mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") ))
 
 	def onPlayBackStopped( self ):
 		mal = MAL()
-		mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") )
+		mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") ))
 
-class XBMCMonitor( xbmc.Monitor ):
-	def __init__(self, *args):
-		pass
+#class XBMCMonitor( xbmc.Monitor ):
+#	def __init__(self, *args):
+#		pass
 
-	onDatabaseUpdated(self, database):
-		mal = MAL()
-		mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") )
+#	def onDatabaseUpdated(self, database):
+#		xbmc.log("### [%s] - %s" %(__scriptname__,"Database Updated, Updating..."), level=xbmc.LOGNOTICE)
+#		mal = MAL()
+#		mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") ))
 
 #Entry point
 player = XBMCPlayer()
-monitor = XBMCMonitor()
+#monitor = XBMCMonitor()
+mal = MAL()
 a = mal.malLogin()
 if (a != None):
 	while not xbmc.abortRequested: #Main loop

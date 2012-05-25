@@ -58,7 +58,7 @@ class Request():
                 #print response.status
                 #print response_content
 
-		xbmc.log("### [%s] - %s" % (__scriptname__,str(response.status) + ": " str(response.content)), level=xbmc.LOGDEBUG)
+		xbmc.log("### [%s] - %s" % (__scriptname__,str(response.status) + ": " + str(response_content)), level=xbmc.LOGERROR)
   
                 connection.close()
                 raise HttpStatusError()
