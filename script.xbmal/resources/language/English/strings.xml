@@ -8,4 +8,8 @@
 	<!--Notifications for errors and things-->
 	<string id="200">MAL Username or Password Invalid.</string>
 
+	<!--Debug Notices-->
+	<string id="300">Beginning MAL Update</string>
+	<string id="301">shows updated.</string>
+
 </strings>

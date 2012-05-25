@@ -136,21 +136,29 @@ class MAL():
 			if epCount == watchedEpisodes and epCount != 0:
 				if watchStatus is None:
 					a.add({'anime_id':mal, 'status':'completed', 'episodes':watchedEpisodes})
+					return True;
 				else:
 					a.update(mal, {'status':'completed', 'episodes':watchedEpisodes, 'score':score})
+					return True;
 			elif (watchedEpisodes != 0):
 				if epCount == 0 or epCount > watchedEpisodes:
 					if watchStatus is None:
 						a.add({'anime_id':mal, 'status':'watching', 'episodes':watchedEpisodes})
+						return True;
 					else:
 						a.update(mal, {'status':'watching', 'episodes':watchedEpisodes, 'score':score})
+						return True;
 			elif (watchedEpisodes == 0):
 				if watchStatus is None:
 					a.add({'anime_id':mal, 'status':'plan to watch', 'episodes':watchedEpisodes})
+					return True;
 			#all other scenarios skipped, as they are inconsisancies. Also, I can't spell.
+		return False;
 				
 
 	def fullUpdate(self, filename):
+		xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,__settings__.getLocalizedString(300),10,__icon__))
+		showCount = 0;
 		completed = parseConfig(filename)
 		#Most of this is from the watchlist code, because we're doing something very similar.
 		json_query = xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"VideoLibrary.GetEpisodes","params":{"properties":["tvshowid","playcount","season"], "sort": {"method":"episode"} }, "id":1}')
@@ -175,7 +183,9 @@ class MAL():
 					for episode in season:
 						if(episode['playcount'] != 0 and episode['label'][0] != 'S'):
 							count = count + 1
-					updateMal(int(season[0]['tvshowid']), int(season[0]['season']), int(malID), count)	
+					if updateMal(int(season[0]['tvshowid']), int(season[0]['season']), int(malID), count):
+						showCount = showCount + 1
+		xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,str(showCount) + " " + __settings__.getLocalizedString(301),10,__icon__))
 				
 
 class XBMCPlayer( xbmc.Player ):
