@@ -190,8 +190,17 @@ class XBMCPlayer( xbmc.Player ):
 		mal = MAL()
 		mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") )
 
+class XBMCMonitor( xbmc.Monitor ):
+	def __init__(self, *args):
+		pass
+
+	onDatabaseUpdated(self, database):
+		mal = MAL()
+		mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") )
+
 #Entry point
 player = XBMCPlayer()
+monitor = XBMCMonitor()
 a = mal.malLogin()
 if (a != None):
 	while not xbmc.abortRequested: #Main loop
