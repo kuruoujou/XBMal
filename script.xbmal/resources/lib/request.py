@@ -8,6 +8,7 @@
 import urllib
 import httplib
 import base64
+import xbmc #For Logging
   
 class Request():
   
@@ -54,8 +55,10 @@ class Request():
             # and print the status code and response.
             if response.status != httplib.OK:
   
-                print response.status
-                print response_content
+                #print response.status
+                #print response_content
+
+		xbmc.log("### [%s] - %s" % (__scriptname__,str(response.status) + ": " str(response.content)), level=xbmc.LOGDEBUG)
   
                 connection.close()
                 raise HttpStatusError()
