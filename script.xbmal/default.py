@@ -25,7 +25,7 @@ class MAL():
 			mal.init_anime()
 			return mal.anime
 
-	def generateMenu(self, message, prompt, items):
+'''	def generateMenu(self, message, prompt, items):
 		print message
 		count = 0
 		for item in items:
@@ -114,7 +114,7 @@ class MAL():
 						show = autoSearch(tvshow[u'label'].encode('ascii', 'ignore'), season)
 					if exists is True:
 						f.write(str(tvshow[u'tvshowid']) + " | " + str(season) + " | " + str(show) + "\n")
-		f.close()
+		f.close()'''
 		
 
 	def updateMal(self, xbmc, season, mal, watchedEpisodes):
