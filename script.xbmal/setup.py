@@ -60,9 +60,11 @@ class ListGenerator():
 		returnList.append({'xbmcID':'-1', 'xbmcTitle':__settings__.getLocalizedString(401), 'xbmcSeason':'0', 'malID':'%done%', 'malTitle':''})
 		return returnList
 
-	def generateFix(self, item):
+	def generateFix(self, item, searchString=False):
 		returnList = []
-		for result in self.a.search(item['xbmcTitle'].encode('ascii','ignore')).values():
+		if searchString == False or searchString == "":
+			searchString = item['xbmcTitle']
+		for result in self.a.search(searchString.encode('ascii','ignore')).values():
 			returnList.append({'xbmcID':item['xbmcID'], 'xbmcTitle':item['xbmcTitle'], 'xbmcSeason':item['xbmcSeason'], 'malID':result['id'], 'malTitle':result['title']})
 		returnList.append({'xbmcID':item['xbmcID'], 'xbmcTitle':item['xbmcTitle'], 'xbmcSeason':item['xbmcSeason'], 'malID':'%skip%', 'malTitle':__settings__.getLocalizedString(402)})
 		returnList.append({'xbmcID':'-1', 'xbmcTitle':__settings__.getLocalizedString(403), 'xbmcSeason':'0', 'malID':'%manual%', 'malTitle':''})
@@ -83,6 +85,7 @@ class ListGenerator():
 				else:
 					displayStrings.append(item['xbmcTitle'])
 		return displayStrings
+
 
 
 class MainDiag():
@@ -107,13 +110,30 @@ class MainDiag():
 						if (newResult != len(possibleReplacements) - 1 and newResult != -1):
 							mappings[selectedItem] = possibleReplacements[newResult]
 						elif (newResult != -1):
-							pass #Need to make a manual search here
+							while 1:
+								possibleReplacements = lg.generateFix(mappings[selectedItem], self.manualSearch())
+								newResult = ListDialog.select(__settings__.getLocalizedString(406) + " " + mappings[selectedItem]['xbmcTitle'], lg.generateSelection(possibleReplacements, False))
+								if (newResult != len(possibleReplacements) - 1 and newResult != -1):
+									mappings[selectedItem] = possibleReplacements[newResult]
+									break
+								elif (newResult == -1):
+										break
 					if(selectedItem == -1):
 						doWrite = False
 						break
 				#Need to call a re-write function here.
 		else:
 			pDialog.close()
+
+
+	def manualSearch(self):
+		kb = xbmc.Keyboard()
+		kb.setHeading(__settings__.getLocalizedString(412))
+		kb.doModal()
+		if (kb.isConfirmed()):
+			return kb.getText()
+		else:
+			return False
 				
 
 w = MainDiag()

@@ -29,5 +29,6 @@
 	<string id="409">Select a show to fix mapping.</string>
 	<string id="410">Verifying username and password with MAL</string>
 	<string id="411">Error retrieving information from MAL</string>
+	<string id="412">Enter MAL Search String</string>
 
 </strings>
