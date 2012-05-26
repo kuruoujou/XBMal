@@ -37,49 +37,13 @@ class MAL():
 			mal.init_anime()
 			return mal.anime
 
-	def updateMal(self, xbmc, season, mal, watchedEpisodes):
-		details = a.details(mal, 1)
-		watchStatus = details[u'watched_status']
-		if details[u'episodes'] is not None:
-			epCount = int(details[u'episodes'])
-		else:
-			epCount = 0
-		if details[u'watched_episodes'] is not None:
-			epWatchedMal = int(details[u'watched_episodes'])
-		else:
-			epWatchedMal = 0
-		if details[u'score'] is not None:
-			score = int(details[u'score'])
-		else:
-			score = 0
-		if watchStatus == u'watching' or watchStatus == u'plan to watch' or watchStatus == None: #Only want to mess with currently watching shows or shows planned to be watched, or shows not on the list at all, for now.
-			if epCount == watchedEpisodes and epCount != 0:
-				if watchStatus is None:
-					a.add({'anime_id':mal, 'status':'completed', 'episodes':watchedEpisodes})
-					return True;
-				else:
-					a.update(mal, {'status':'completed', 'episodes':watchedEpisodes, 'score':score})
-					return True;
-			elif (watchedEpisodes != 0):
-				if epCount == 0 or epCount > watchedEpisodes:
-					if watchStatus is None:
-						a.add({'anime_id':mal, 'status':'watching', 'episodes':watchedEpisodes})
-						return True;
-					else:
-						a.update(mal, {'status':'watching', 'episodes':watchedEpisodes, 'score':score})
-						return True;
-			elif (watchedEpisodes == 0):
-				if watchStatus is None:
-					a.add({'anime_id':mal, 'status':'plan to watch', 'episodes':watchedEpisodes})
-					return True;
-			#all other scenarios skipped, as they are inconsisancies. Also, I can't spell.
-		return False;
-				
-
 	def fullUpdate(self, filename):
-		xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,__settings__.getLocalizedString(300),10,__icon__))
+		xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,__settings__.getLocalizedString(300),20,__icon__))
 		showCount = 0;
 		completed = self.parseConfig(filename)
+		#Get current MAL list (dictionary of dictionaries)
+		malList = a.list()
+		malListIDs = malList.keys()
 		#Most of this is from the watchlist code, because we're doing something very similar.
 		json_query = xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"VideoLibrary.GetEpisodes","params":{"properties":["tvshowid","playcount","season"], "sort": {"method":"episode"} }, "id":1}')
 		json_query = unicode(json_query, 'utf-8', errors='ignore')
@@ -87,7 +51,7 @@ class MAL():
 		if json_response['result'].has_key('episodes'):
 			json_response = json_response['result']['episodes']
 			#the list is sorted by episode number, then tvshow id. Want a seperate list for each tv show.
-			tvshows = [list(group) for key,group in itertools.groupby(sorted(json_response, key=itemgetter('tvshowid')), key=itemgetter('tvshowid'))]
+			tvshows = [list(group) for key,group in itertools.groupby(sorted(json_response,key=itemgetter('tvshowid')),key=itemgetter('tvshowid'))]
 			for tvshow in tvshows:
 				seasons = [list(group) for key,group in itertools.groupby(sorted(tvshow, key=itemgetter('season')), key=itemgetter('season'))]
 				for season in seasons:
@@ -99,13 +63,47 @@ class MAL():
 							malID = item['mal']
 					if (malID == -1 or malID == '%skip%'):
 						continue #move on...
+					malID = int(malID)
 					count = 0
 					for episode in season:
 						if(episode['playcount'] != 0 and episode['label'][0] != 'S'):
 							count = count + 1
-					if self.updateMal(int(season[0]['tvshowid']), int(season[0]['season']), int(malID), count):
-						showCount = showCount + 1
-		xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,str(showCount) + " " + __settings__.getLocalizedString(301),10,__icon__))
+					if malID in malListIDs:
+						if malList[malID]['episodes'] is not None:
+							epCount = int(malList[malID]['episodes'])
+						else:
+							epCount = 0
+					else:
+						details = a.details(malID)
+						if details[u'episodes'] is not None:
+							epCount = int(details[malID]['episodes'])
+						else:
+							epCount = 0
+					
+					if malID in malListIDs:
+						if(malList[malID]['watched_status'] == u'watching' or malList[malID]['watched_status'] == u'plan to watch'):
+							if count == epCount and epCount != 0:
+								xbmc.log("### [%s] - %s" %(__scriptname__,malList[malID]['title'] + " " + __settings__.getLocalizedString(302)), level=xbmc.LOGNOTICE)
+								a.update(malID, {'status':'completed', 'episodes':count, 'score':malList[malID]['score']})
+								showCount = showCount + 1
+							elif (count != 0 and (epCount == 0 or epCount > count)):
+								xbmc.log("### [%s] - %s" %(__scriptname__,malList[malID]['title'] + " " + __settings__.getLocalizedString(303) + " " + str(count)), level=xbmc.LOGNOTICE)
+								a.update(malID, {'status':'watching', 'episodes':count, 'score':malList[malID]['score']})
+								showCount = showCount + 1
+					else:
+						if count == epCount and epCount != 0:
+							xbmc.log("### [%s] - %s" %(__scriptname__,details['title'] + " " + __settings__.getLocalizedString(302)), level=xbmc.LOGNOTICE)
+							a.add({'anime_id':malID, 'status':'completed', 'episodes':count})
+							showCount = showCount + 1
+						elif count != 0 and epCount == 0 or epCount > count:
+							xbmc.log("### [%s] - %s" %(__scriptname__,details['title'] + " " + __settings__.getLocalizedString(303) + " " + str(count)), level=xbmc.LOGNOTICE)
+							a.add({'anime_id':malID, 'status':'watching', 'episodes':count})
+							showCount = showCount + 1
+						elif count == 0:
+							xbmc.log("### [%s] - %s" %(__scriptname__,details['title'] + " " + __settings__.getLocalizedString(304)), level=xbmc.LOGNOTICE)
+							a.add({'anime_id':malID, 'status':'plan to watch', 'episodes':count})
+							showCount = showCount + 1
+		xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,str(showCount)+" "+__settings__.getLocalizedString(301),20,__icon__))
 				
 
 class XBMCPlayer( xbmc.Player ):

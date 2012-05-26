@@ -53,6 +53,12 @@ class Anime():
   
         self.username = username
         self.request = request
+
+    def getEpisodes(self, episodes):
+        if episodes != None:
+            return episodes
+        else:
+            return 0
   
     def list(self):
         """Fetch/Download anime list from MAL."""
@@ -71,7 +77,7 @@ class Anime():
                     'id':               int(e['id']),
                     'title':            utils.htmldecode(e['title']),
                     'type':             e['type'],             # TV, Movie, OVA, ONA, Special, Music
-                    'episodes':         lambda: int(e['episodes']) if e['episodes'] != None else 0,
+                    'episodes':         self.getEpisodes(e['episodes']),
                     'status':           e['status'],           # finished airing, currently airing, not yet aired
                     'watched_status':   e['watched_status'],   # watching, completed, on-hold, dropped, plan to watch
                     'watched_episodes': int(e['watched_episodes']),
@@ -101,7 +107,7 @@ class Anime():
                     'id':               int(e['id']),
                     'title':            utils.htmldecode(e['title']),
                     'type':             e['type'],             # TV, Movie, OVA, ONA, Special, Music
-                    'episodes':         lambda: int(e['episodes']) if e['episodes'] != None else 0,
+                    'episodes':         self.getEpisodes(e['episodes']),
                     #'status':           e['status'],           # finished airing, currently airing, not yet aired
                     'members_score':    float(e['members_score']),
                     'image':            e['image_url']
