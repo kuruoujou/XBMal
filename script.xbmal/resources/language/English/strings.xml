@@ -4,6 +4,7 @@
 	<string id="100">MyAnimeList Credentials</string>
 	<string id="101">Username</string>
 	<string id="102">Password</string>
+	<string id="103">Run Setup</string>
 
 	<!--Notifications for errors and things-->
 	<string id="200">MAL Username or Password Invalid.</string>
@@ -14,5 +15,19 @@
 	<string id="302">marked as completed.</string>
 	<string id="303">marked as watching, at episode</string>
 	<string id="304">marked as plan to watch.</string>
+
+	<!--Setup script strings-->
+	<string id="400">No MAL Listing Found</string>
+	<string id="401">Save above selections</string>
+	<string id="402">None of the above</string>
+	<string id="403">Manual Search</string>
+	<string id="404">Generating list of mappings from XBMC to MAL</string>
+	<string id="405">Please wait, this could take several minutes</string>
+	<string id="406">Re-mapping</string>
+	<string id="407">Manual search for</string>
+	<string id="408">XBMAL Setup</string>
+	<string id="409">Select a show to fix mapping.</string>
+	<string id="410">Verifying username and password with MAL</string>
+	<string id="411">Error retrieving information from MAL</string>
 
 </strings>
