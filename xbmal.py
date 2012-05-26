@@ -165,11 +165,11 @@ def updateMal(xbmc, season, mal, watchedEpisodes):
 		score = int(details[u'score'])
 	else:
 		score = 0
-	if watchStatus == u'watching' or watchStatus == u'plan to watch': #Only want to mess with currently watching shows or shows planned to be watched for now.
+	if watchStatus == u'watching' or watchStatus == u'plan to watch' or watchStatus == None: #Only want to mess with currently watching shows or shows planned to be watched, or shows not on the list at all, for now.
 		if epCount == watchedEpisodes and epCount != 0:
 			if watchStatus is None:
 				#print "add: completed", 
-				a.add({'id':mal, 'status':'completed', 'episodes':watchedEpisodes})
+				a.add({'anime_id':mal, 'status':'completed', 'episodes':watchedEpisodes})
 			else:
 				#print "update: completed, " + str(score),
 				a.update(mal, {'status':'completed', 'episodes':watchedEpisodes, 'score':score})
@@ -177,14 +177,14 @@ def updateMal(xbmc, season, mal, watchedEpisodes):
 			if epCount == 0 or epCount > watchedEpisodes:
 				if watchStatus is None:
 					#print "add: watching, " + str(watchedEpisodes) + " episodes",
-					a.add({'id':mal, 'status':'watching', 'episodes':watchedEpisodes})
+					a.add({'anime_id':mal, 'status':'watching', 'episodes':watchedEpisodes})
 				else:
 					#print "update: watching, " + str(watchedEpisodes) + " episodes, " + str(score),
 					a.update(mal, {'status':'watching', 'episodes':watchedEpisodes, 'score':score})
 		elif (watchedEpisodes == 0):
 			if watchStatus is None:
 				#print "add: plan to watch", 
-				a.add({'id':mal, 'status':'plan to watch', 'episodes':watchedEpisodes})
+				a.add({'anime_id':mal, 'status':'plan to watch', 'episodes':watchedEpisodes})
 		#all other scenarios skipped, as they are inconsisancies. Also, I can't spell.
 			
 
