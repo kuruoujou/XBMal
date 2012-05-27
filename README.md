@@ -4,7 +4,7 @@ XBMC MyAnimeList Updater
 * Author:	Spencer Julian (<helloThere@spencerjulian.com>)
 * Date:		May, 2012
 * Last Update:	May 27, 2012
-* Version:	0.2.1
+* Version:	0.2.2
 * Github:	<https://github.com/kuruoujou/XBMal>
 
 This is free software released under version 3 of the GPL License.
@@ -58,10 +58,7 @@ which will mark it to be skipped and not updated during MAL udpates, or you can 
 `Manual Search`, where you enter your own MAL search for the show.
 
 Once you have everything mapped, simply select the last item in the full list, labeled
-`Save above selections`. This will write your mappings to it's configuration file. As
-of version 0.2, you will need to restart XBMC after changing the MAL username and password.
-This is only if you add or change them, though. Adding or removing shows from the setup
-script won't require a restart.
+`Save above selections`. This will write your mappings to it's configuration file.
 
 Ok, so the configuration file is written. Now you just need to watch a video. Whenever
 a video stops playing (it reaches the end or the user hits stop), the script will run and
@@ -81,7 +78,6 @@ forward to hearing from you!
 
 TODO
 ----
-* Not require a restart of XBMC after changing user and pass
 * Make the list look nicer, like [this](http://www.howtogeek.com/wp-content/uploads/2011/10/2011-10-04_152227.jpg).
 * Create a repository for this add-on, along with possible future add-ons (now that I know how to make them...)
 * Move away from config file, store in an actual database if possible

@@ -150,6 +150,14 @@ player = XBMCPlayer()
 #monitor = XBMCMonitor()
 mal = MAL()
 a = mal.malLogin()
-if (a != None):
-	while not xbmc.abortRequested: #Main loop
+while not xbmc.abortRequested:
+	if (a != None):
 		xbmc.sleep(100)
+	else:
+		trys = 0
+		if (trys <= 5) : #Only want to try 6 times, i.e., for half an hour.
+			xbmc.sleep(1000 * 60 * 5) #Wait for 5 minutes before trying again
+			a = mal.malLogin()
+			trys = trys + 1 
+		else:
+			break #If it's been half an hour with no updates, break, as the user probably isn't going to update their credentials now.
