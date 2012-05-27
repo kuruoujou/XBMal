@@ -74,9 +74,9 @@ which are typically at the bottom of the list.
 Questions, Comments, Concerns, Issues
 -------------------------------------
 
-If you have any of these, you can [submit an issue]<https://github.com/kuruoujou/XBMal/issues> or
-you can stop by the [xbmc thread for xbmal]<http://forum.xbmc.org/showthread.php?tid=125866>, or you can
-even check out the [myanimelist thread for xbmal]<http://myanimelist.net/forum/?topicid=414901>. I look
+If you have any of these, you can [submit an issue](https://github.com/kuruoujou/XBMal/issues) or
+you can stop by the [xbmc thread for xbmal](http://forum.xbmc.org/showthread.php?tid=125866), or you can
+even check out the [myanimelist thread for xbmal](http://myanimelist.net/forum/?topicid=414901). I look
 forward to hearing from you!
 
 TODO
