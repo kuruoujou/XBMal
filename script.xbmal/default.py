@@ -5,6 +5,7 @@ __settings__ 	= xbmcaddon.Addon(id='script.xbmal')
 __cwd__		= __settings__.getAddonInfo('path')
 __icon__	= os.path.join(__cwd__, "icon.png")
 __scriptname__	= "XBMAL"
+__configFile__	= xbmc.translatePath('special://profile/addon_data/script.xbmal/config')
 
 BASE_RESOURCE_PATH = xbmc.translatePath( os.path.join(__cwd__, 'resources', 'lib' ) )
 sys.path.append(BASE_RESOURCE_PATH)
@@ -119,12 +120,12 @@ class XBMCPlayer( xbmc.Player ):
 	def onPlayBackEnded( self ):
 		if self.wasVideo:
 			mal = MAL()
-			mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") ))
+			mal.fullUpdate(__configFile__)
 
 	def onPlayBackStopped( self ):
 		if self.wasVideo:
 			mal = MAL()
-			mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") ))
+			mal.fullUpdate(__configFile__)
 	
 	def onPlayBackStarted( self ):
 		self.wasVideo = False
@@ -143,7 +144,7 @@ class XBMCPlayer( xbmc.Player ):
 #	def onDatabaseUpdated(self, database):
 #		xbmc.log("### [%s] - %s" %(__scriptname__,"Database Updated, Updating..."), level=xbmc.LOGNOTICE)
 #		mal = MAL()
-#		mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") ))
+#		mal.fullUpdate(__configFile__)
 
 #Entry point
 player = XBMCPlayer()

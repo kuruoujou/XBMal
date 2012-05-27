@@ -6,6 +6,7 @@ from operator import itemgetter
 __settings__    = xbmcaddon.Addon(id='script.xbmal')
 __cwd__         = __settings__.getAddonInfo('path')
 __icon__        = os.path.join(__cwd__, "icon.png")
+__configFile__ 	= xbmc.translatePath('special://profile/addon_data/script.xbmal/config')
 __scriptname__  = "XBMAL Setup"
 
 BASE_RESOURCE_PATH = xbmc.translatePath( os.path.join(__cwd__, 'resources', 'lib' ) )
@@ -41,9 +42,9 @@ class ListGenerator():
 
 	
 	def generateList(self, ret):
-		configFile = self.parseConfig(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") ))
+		configList = self.parseConfig(__configFile__)
 		configShows = {}
-		for item in configFile:
+		for item in configList:
 			configShows[item['xbmc'] + '.' + item['season']] = item['mal']
 		returnList = []
 		json_query = xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"VideoLibrary.GetEpisodes","params":{"properties":["tvshowid","season","showtitle"], "sort": {"method":"episode"} }, "id":1}') 
@@ -113,40 +114,49 @@ class ListGenerator():
 
 	def writeConfig(self, mappings, ret):
 		totalMappings = len(mappings)
-		configFile = open(xbmc.translatePath( os.path.join( __cwd__, "resources", "config")), 'w')
+		cfile = open(__configFile__, 'w')
 		xbmc.log("### [%s] - %s" % (__scriptname__,__settings__.getLocalizedString(413)), level=xbmc.LOGNOTICE)
 		writeCount = 0
 		for mapping in mappings:
 			writeCount = writeCount + 1
 			ret.update(int(float(writeCount)/float(totalMappings)*100))
 			if (str(mapping['xbmcID']) != '-1'):
-				configFile.write(str(mapping['xbmcID']) + " | " + str(mapping['xbmcSeason']) + " | " + str(mapping['malID']) + "\n")
+				cfile.write(str(mapping['xbmcID']) + " | " + str(mapping['xbmcSeason']) + " | " + str(mapping['malID']) + "\n")
 
 
 
 class MainDiag():
 	def __init__(self):
+		#Generate a progress dialog
 		pDialog = xbmcgui.DialogProgress()
 		pDialog.create(__settings__.getLocalizedString(408))
 		pDialog.update(0, __settings__.getLocalizedString(410))
+		#Create the listgenerator
 		lg = ListGenerator()
-		if (lg.a != False):
+		if (lg.a != False): #If lg.a is False, then we can't login to MAL. Exit.
 			pDialog.update(0, __settings__.getLocalizedString(404), __settings__.getLocalizedString(405))
+			#Generate the XBMC to MAL list
 			mappings = lg.generateList(pDialog)
 			pDialog.close()
+			#if mappings is false, then something went wrong in generateList. Exit.
 			if mappings != False:
 				selectedItem = 0
 				doWrite = True
+				#We're looping until the final selection is made - either "back" or the write command.
 				while selectedItem != len(mappings) - 1:
+					#Create a new Dialog. Did not want to deal with creating a full window, although a virtual file list might be nice...
 					ListDialog = xbmcgui.Dialog()
+					#Make it a select dialog, and generate a list of strings we can use from the list we got earlier
 					selectedItem = ListDialog.select(__settings__.getLocalizedString(409), lg.generateSelection(mappings))
-					if (selectedItem != len(mappings) - 1 and selectedItem != -1):
+					if (selectedItem != len(mappings) - 1 and selectedItem != -1): #-1 is back, last item is write
+						#Perform the MAL search for the XBMC title, and create a dialog of all the results.
 						possibleReplacements = lg.generateFix(mappings[selectedItem])
 						newResult = ListDialog.select(__settings__.getLocalizedString(406) + " " + mappings[selectedItem]['xbmcTitle'], lg.generateSelection(possibleReplacements, False))
-						if (newResult != len(possibleReplacements) - 1 and newResult != -1):
+						if (newResult != len(possibleReplacements) - 1 and newResult != -1): #-1 is back, last item is manual
 							mappings[selectedItem] = possibleReplacements[newResult]
 						elif (newResult != -1):
 							while 1:
+								#If it's manual, keep looping until they select something or give up (none or back)
 								possibleReplacements = lg.generateFix(mappings[selectedItem], self.manualSearch())
 								newResult = ListDialog.select(__settings__.getLocalizedString(406) + " " + mappings[selectedItem]['xbmcTitle'], lg.generateSelection(possibleReplacements, False))
 								if (newResult != len(possibleReplacements) - 1 and newResult != -1):
@@ -154,15 +164,15 @@ class MainDiag():
 									break
 								elif (newResult == -1):
 										break
-					if(selectedItem == -1):
+					if(selectedItem == -1): #In this case, we backed out of the main select dialog
 						doWrite = False
 						break
-				if doWrite:
+				if doWrite: #Write the config file
 					pDialog.create(__settings__.getLocalizedString(413))
 					lg.writeConfig(mappings, pDialog)
 					pDialog.close()
 		else:
-			pDialog.close()
+			pDialog.close() #and we're done!
 
 
 	def manualSearch(self):

@@ -1,8 +1,0 @@
-0.2.2
-- No longer requires XBMC to restart on user/pass update, however will give up after 6 consecutive tries, 5 minutes apart, and will then require restart.
-
-0.2
-- First release as XBMC plugin, Alpha
-
-0.1
-- pre-Alpha release, works 'independantly' of xbmc
