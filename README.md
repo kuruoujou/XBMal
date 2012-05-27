@@ -82,7 +82,7 @@ forward to hearing from you!
 TODO
 ----
 * Not require a restart of XBMC after changing user and pass
-* Figure out how to make use of XBMC's changelog function on the addon page
 * Make the list look nicer, like [this](http://www.howtogeek.com/wp-content/uploads/2011/10/2011-10-04_152227.jpg).
 * Create a repository for this add-on, along with possible future add-ons (now that I know how to make them...)
+* Move away from config file, store in an actual database if possible
 * Maybe, if we're really really lucky, and work on this really hard, get in the official repository?
