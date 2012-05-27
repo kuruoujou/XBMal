@@ -26,8 +26,25 @@ class ListGenerator():
                 else:   
                         mal.init_anime()
                         return mal.anime
+
+        def parseConfig(self, filename):
+                try:
+                        f = open(filename, 'r')
+                except IOError as e:
+                        return []
+                results = []
+                for line in f.readlines():
+                        shows = line.split(' | ')
+                        results.append({'xbmc':shows[0].strip(), 'season':shows[1].strip(), 'mal':shows[2].strip()})
+                f.close()
+                return results
+
 	
 	def generateList(self, ret):
+		configFile = self.parseConfig(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") ))
+		configShows = {}
+		for item in configFile:
+			configShows[item['xbmc'] + '.' + item['season']] = item['mal']
 		returnList = []
 		json_query = xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"VideoLibrary.GetEpisodes","params":{"properties":["tvshowid","season","showtitle"], "sort": {"method":"episode"} }, "id":1}') 
                 json_query = unicode(json_query, 'utf-8', errors='ignore') 
@@ -47,15 +64,23 @@ class ListGenerator():
 						return False
                                         if season[0]['season'] == 0: 
                                                 continue #Don't do "season 0"
-					searchResults = self.a.search(season[0]['showtitle'].encode('ascii', 'ignore'))
-					if (searchResults is False):
-						searchResult = {'id':'%skip%', 'title':__settings__.getLocalizedString(411)}
-					else:
-						searchResult = self.a.search(season[0]['showtitle'].encode('ascii','ignore')).values()
-					if len(searchResult) != 0:
-						searchResult = searchResult[0]
-					else:
-						searchResult = {'id':'%skip%', 'title':__settings__.getLocalizedString(400)}
+					inConfig = False
+					if str(season[0]['tvshowid']) + '.' + str(season[0]['season']) in configShows:
+						inConfig = True
+						if configShows[str(season[0]['tvshowid']) + '.' + str(season[0]['season'])] == '%skip%':
+							searchResult = {'id':'%skip%', 'title':__settings__.getLocalizedString(400)}
+						else:
+							searchResult = self.a.details(int(configShows[str(season[0]['tvshowid']) + '.' + str(season[0]['season'])]), 1)
+					if inConfig == False:
+						searchResults = self.a.search(season[0]['showtitle'].encode('ascii', 'ignore'))
+						if (searchResults is False):
+							searchResult = {'id':'%skip%', 'title':__settings__.getLocalizedString(411)}
+						else:
+							searchResult = self.a.search(season[0]['showtitle'].encode('ascii','ignore')).values()
+							if len(searchResult) != 0:
+								searchResult = searchResult[0]
+							else:
+								searchResult = {'id':'%skip%', 'title':__settings__.getLocalizedString(400)}
 					returnList.append({'xbmcID':str(season[0]['tvshowid']), 'xbmcTitle':season[0]['showtitle'], 'xbmcSeason':str(season[0]['season']), 'malID':str(searchResult['id']), 'malTitle':searchResult['title']})
 		returnList.append({'xbmcID':'-1', 'xbmcTitle':__settings__.getLocalizedString(401), 'xbmcSeason':'0', 'malID':'%done%', 'malTitle':''})
 		return returnList
@@ -85,6 +110,17 @@ class ListGenerator():
 				else:
 					displayStrings.append(item['xbmcTitle'])
 		return displayStrings
+
+	def writeConfig(self, mappings, ret):
+		totalMappings = len(mappings)
+		configFile = open(xbmc.translatePath( os.path.join( __cwd__, "resources", "config")), 'w')
+		xbmc.log("### [%s] - %s" % (__scriptname__,__settings__.getLocalizedString(413)), level=xbmc.LOGNOTICE)
+		writeCount = 0
+		for mapping in mappings:
+			writeCount = writeCount + 1
+			ret.update(int(float(writeCount)/float(totalMappings)*100))
+			if (str(mapping['xbmcID']) != '-1'):
+				configFile.write(str(mapping['xbmcID']) + " | " + str(mapping['xbmcSeason']) + " | " + str(mapping['malID']) + "\n")
 
 
 
@@ -121,7 +157,10 @@ class MainDiag():
 					if(selectedItem == -1):
 						doWrite = False
 						break
-				#Need to call a re-write function here.
+				if doWrite:
+					pDialog.create(__settings__.getLocalizedString(413))
+					lg.writeConfig(mappings, pDialog)
+					pDialog.close()
 		else:
 			pDialog.close()
 

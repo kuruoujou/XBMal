@@ -30,5 +30,6 @@
 	<string id="410">Verifying username and password with MAL</string>
 	<string id="411">Error retrieving information from MAL</string>
 	<string id="412">Enter MAL Search String</string>
+	<string id="413">Writing new mappings file</string>
 
 </strings>

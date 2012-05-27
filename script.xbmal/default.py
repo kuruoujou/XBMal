@@ -41,6 +41,9 @@ class MAL():
 		xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,__settings__.getLocalizedString(300),20,__icon__))
 		showCount = 0;
 		completed = self.parseConfig(filename)
+		allShows = {}
+		for item in completed:
+			allShows[item['xbmc'] + "." + item['season']] = item['mal']
 		#Get current MAL list (dictionary of dictionaries)
 		malList = a.list()
 		malListIDs = malList.keys()
@@ -58,9 +61,11 @@ class MAL():
 					if season[0]['season'] == 0:
 						continue #Don't do "season 0"
 					malID = -1
-					for item in completed:
-						if int(season[0]['tvshowid']) == int(item['xbmc']) and int(season[0]['season']) == int(item['season']):
-							malID = item['mal']
+					if str(season[0]['tvshowid']) + "." + str(season[0]['season']) in allShows:
+						malID = allShows[str(season[0]['tvshowid']) + "." + str(season[0]['season'])]
+					#for item in completed:
+					#	if int(season[0]['tvshowid']) == int(item['xbmc']) and int(season[0]['season']) == int(item['season']):
+					#		malID = item['mal']
 					if (malID == -1 or malID == '%skip%'):
 						continue #move on...
 					malID = int(malID)
@@ -109,14 +114,27 @@ class MAL():
 class XBMCPlayer( xbmc.Player ):
 	def __init__(self, *args):
 		xbmc.Player.__init__(self)
+		self.wasVideo = False
 
 	def onPlayBackEnded( self ):
-		mal = MAL()
-		mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") ))
+		if self.wasVideo:
+			mal = MAL()
+			mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") ))
 
 	def onPlayBackStopped( self ):
-		mal = MAL()
-		mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") ))
+		if self.wasVideo:
+			mal = MAL()
+			mal.fullUpdate(xbmc.translatePath( os.path.join( __cwd__, "resources", "config") ))
+	
+	def onPlayBackStarted( self ):
+		self.wasVideo = False
+		if self.isPlayingVideo():
+			self.wasVideo = True
+
+	def onPlayBackResumed( self ):
+		self.wasVideo = False
+		if self.isPlayingVideo():
+			self.wasVideo = True
 
 #class XBMCMonitor( xbmc.Monitor ):
 #	def __init__(self, *args):
