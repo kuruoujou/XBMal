@@ -1,3 +1,8 @@
+0.3.1
+- Moved to xml-based config
+- Rewrote setup.py file, moved many shared functions to resources folder
+- Hopefully sped up execution time of setup, untested yet...
+
 0.2.2
 - Moved config file location
 
