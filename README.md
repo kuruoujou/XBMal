@@ -80,5 +80,5 @@ TODO
 ----
 * Make the list look nicer, like [this](http://www.howtogeek.com/wp-content/uploads/2011/10/2011-10-04_152227.jpg).
 * Create a repository for this add-on, along with possible future add-ons (now that I know how to make them...)
-* Move away from config file, store in an actual database if possible
+* Move away from config file, store in an xml file instead
 * Maybe, if we're really really lucky, and work on this really hard, get in the official repository?
