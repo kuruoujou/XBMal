@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import xbmcaddon, os
 __settings__    = xbmcaddon.Addon(id='script.xbmal')
 __cwd__         = __settings__.getAddonInfo('path')
 __scriptname__  = "XBMAL Setup"
@@ -20,19 +20,19 @@ class ListGenerator():
 	def generateList(self, ret):
 	""" Generates a list of elements to be mapped """
 		returnList = self.config.parseConfig() #returns a list of elements
-		tvshows = self.xbmal.server.getXBMCShows()
+		tvshows = self.server.getXBMCShows()
 		totalShows = len(tvshows)
 		currentShow = 0
 		for tvshow in tvshows: 
 			currentShow = currentShow + 1
 			ret.update(int(((float(currentShow)/float(totalShows))*100)))
-			seasons = self.xbmal.server.getXBMCSeasons(tvshow)
+			seasons = self.server.getXBMCSeasons(tvshow)
 			for season in seasons: 
 				if(ret.iscanceled()):
 					return False
 				if season[0]['season'] == 0: 
 					continue #Don't do "season 0"
-				if not self.config.showInConfig(season[0]['tvshowid'], season[0]['season']):
+				if self.config.showInConfig(season[0]['tvshowid'], season[0]['season']) == False:
 					searchResults = self.a.search(season[0]['showtitle'].encode('ascii', 'ignore'))
 					if (searchResults is False):
 						searchResult = {'id':'%skip%', 'title':__settings__.getLocalizedString(411)}

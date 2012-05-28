@@ -30,16 +30,16 @@ class XML(xmlFile=__configFile__):
 		return self.tree.findall('show')
 
 	def showInConfig(self, showid, season):
-	""" Checks to see if a show is in the config file, based on show id and season, returns true or false. """
+	""" Checks to see if a show is in the config file, based on show id and season, returns the appropriate mal id or false. """
 		for item in self.tree.iterfind('show'):
 			if (item.attrib['xbmcid'] == str(showid)) and (item.attrib['season'] == str(season)):
-				return True
+				return item.attrib['malid']
 		return False
 
-	def replace(self, oldItem, item):
+	def replace(self, oldItem, location, item):
 	""" Replaces the item with the given id with the given item, returns list of XML Elements """
 		self.tree.getroot().remove(oldItem)
-		self.tree.getroot().add(item)
+		self.tree.getroot().insert(location,item)
 		return self.tree.findall('show')
 
 	def add(self, showid, season, title, malid, maltitle):
