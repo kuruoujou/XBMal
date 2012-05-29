@@ -1,13 +1,18 @@
 #!/usr/bin/env python
-import xbmcaddon, os
+import xbmc, xbmcgui, xbmcaddon, simplejson, os, sys, itertools, math
+import xml.etree.ElementTree as et
+from operator import itemgetter
+
 __settings__    = xbmcaddon.Addon(id='script.xbmal')
 __cwd__         = __settings__.getAddonInfo('path')
+__icon__        = os.path.join(__cwd__, "icon.png")
+__configFile__  = xbmc.translatePath('special://profile/addon_data/script.xbmal/config.xml')
 __scriptname__  = "XBMAL Setup"
 
 BASE_RESOURCE_PATH = xbmc.translatePath( os.path.join(__cwd__, 'resources', 'lib' ) )
 sys.path.append(BASE_RESOURCE_PATH)
 
-import xbmal #imports everything else we need.
+import myanimelist, xbmal
 
 class ListGenerator():
 	def __init__(self):
@@ -15,18 +20,18 @@ class ListGenerator():
 		self.mal = xbmal.MAL()
 		self.server = xbmal.server()
 		self.output = xbmal.output()
-		self.a = mal.malLogin()
+		self.a = self.mal.a
 
 	def generateList(self, ret):
-	""" Generates a list of elements to be mapped """
+		""" Generates a list of elements to be mapped """
 		returnList = self.config.parseConfig() #returns a list of elements
-		tvshows = self.server.getXBMCShows()
+		tvshows = self.server.getXBMCshows()
 		totalShows = len(tvshows)
 		currentShow = 0
 		for tvshow in tvshows: 
 			currentShow = currentShow + 1
 			ret.update(int(((float(currentShow)/float(totalShows))*100)))
-			seasons = self.server.getXBMCSeasons(tvshow)
+			seasons = self.server.getXBMCseasons(tvshow)
 			for season in seasons: 
 				if(ret.iscanceled()):
 					return False
@@ -35,34 +40,36 @@ class ListGenerator():
 				if self.config.showInConfig(season[0]['tvshowid'], season[0]['season']) == False:
 					searchResults = self.a.search(season[0]['showtitle'].encode('ascii', 'ignore'))
 					if (searchResults is False):
-						searchResult = {'id':'%skip%', 'title':__settings__.getLocalizedString(411)}
+						searchResult = [{'id':'%skip%', 'title':__settings__.getLocalizedString(411)}]
 					else:
 						searchResult = searchResults.values()
 					if len(searchResult) != 0:
-						searchResult = searchResult[0]
+						searchResult = searchResult[len(searchResult)-1] #The last item is usually the closest.
 					else:
 						searchResult = {'id':'%skip%', 'title':__settings__.getLocalizedString(400)}
-					returnList = self.config.add(season[0]['tvshowid'], season[0]['season'], season[0]['showtitle'], searchResult['id'], searchResult['title'])
+					returnList = self.config.add(str(season[0]['tvshowid']), str(season[0]['season']), season[0]['showtitle'], str(searchResult['id']), searchResult['title'])
 		return returnList
 
 	def generateFix(self, item, searchString=False):
-	""" generates a list of results to fix a single mapping """
+		""" generates a list of results to fix a single mapping """
 		returnList = []
 		if searchString == False or searchString == "":
 			searchString = item.get('xbmcTitle')
 		for result in self.a.search(searchString.encode('ascii','ignore')).values():
-			returnList.append(et.Element('show', attib={'xbmcID':item.get('xbmcID'), 'season':item.get('season'), 'xbmcTitle':item.get('xbmcTitle'), 'malID':result['id'], 'malTitle':result['title']}))
-		returnList.append(et.Element('show', attrib={'xbmcID':item.get('xbmcID'), 'xbmcTitle':item.get('xbmcTitle'), 'season':item.get('xbmcSeason'), 'malID':'%skip%', 'malTitle':__settings__.getLocalizedString(402)}))
+			returnList.append(et.Element('show', attrib={'xbmcID':item.get('xbmcID'), 'season':item.get('season'), 'xbmcTitle':item.get('xbmcTitle'), 'malID':str(result['id']), 'malTitle':result['title']}))
+		returnList.append(et.Element('show', attrib={'xbmcID':item.get('xbmcID'), 'xbmcTitle':item.get('xbmcTitle'), 'season':item.get('season'), 'malID':'%skip%', 'malTitle':__settings__.getLocalizedString(402)}))
 		return returnList
 
 	def generateSelection(self, mappings, fullList=True):
-	""" Takes a list of elements and generates a readable list in the same order. """
+		""" Takes a list of elements and generates a readable list in the same order. """
 		displayStrings = []
-		for item in mappings:
-			displayStrings.append(item.get('xbmcTitle') + " S" + item.get('season') + " -> " + item.get('malTitle'))
 		if fullList == True:
+			for item in mappings:
+				displayStrings.append(item.get('xbmcTitle') + " S" + str(item.get('season')) + " -> " + item.get('malTitle'))
 			displayStrings.append(__settings__.getLocalizedString(401))
 		else:
+			for item in mappings:
+				displayStrings.append(item.get('malTitle'))
 			displayStrings.append(__settings__.getLocalizedString(403))
 		return displayStrings
 
@@ -85,23 +92,23 @@ class MainDiag():
 				selectedItem = 0
 				doWrite = True
 				#We're looping until the final selection is made - either "back" or the write command.
-				while selectedItem != len(mappings) - 1:
+				while selectedItem != len(mappings):
 					#Create a new Dialog. Did not want to deal with creating a full window, although a virtual file list might be nice...
 					ListDialog = xbmcgui.Dialog()
 					#Make it a select dialog, and generate a list of strings we can use from the list we got earlier
 					selectedItem = ListDialog.select(__settings__.getLocalizedString(409), lg.generateSelection(mappings))
-					if (selectedItem != len(mappings) - 1 and selectedItem != -1): #-1 is back, last item is write
+					if (selectedItem != len(mappings) and selectedItem != -1): #-1 is back, last item is write
 						#Perform the MAL search for the XBMC title, and create a dialog of all the results.
 						possibleReplacements = lg.generateFix(mappings[selectedItem])
 						newResult = ListDialog.select(__settings__.getLocalizedString(406) + " " + mappings[selectedItem].get('xbmcTitle'), lg.generateSelection(possibleReplacements, False))
-						if (newResult != len(possibleReplacements) - 1 and newResult != -1): #-1 is back, last item is manual
+						if (newResult != len(possibleReplacements) and newResult != -1): #-1 is back, last item is manual
 							mappings = lg.config.replace(mappings[selectedItem],selectedItem,possibleReplacements[newResult])
 						elif (newResult != -1):
 							while 1:
 								#If it's manual, keep looping until they select something or give up (none or back)
 								possibleReplacements = lg.generateFix(mappings[selectedItem], self.manualSearch())
 								newResult = ListDialog.select(__settings__.getLocalizedString(406) + " " + mappings[selectedItem].get('xbmcTitle'), lg.generateSelection(possibleReplacements, False))
-								if (newResult != len(possibleReplacements) - 1 and newResult != -1):
+								if (newResult != len(possibleReplacements) and newResult != -1):
 									mappings = lg.config.replace(mappings[selectedItem],selectedItem,possibleReplacements[newResult])
 									break
 								elif (newResult == -1):
@@ -118,7 +125,7 @@ class MainDiag():
 
 
 	def manualSearch(self):
-	""" Creates a keyboard for a manual search """
+		""" Creates a keyboard for a manual search """
 		kb = xbmc.Keyboard()
 		kb.setHeading(__settings__.getLocalizedString(412))
 		kb.doModal()

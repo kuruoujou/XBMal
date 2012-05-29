@@ -1,13 +1,18 @@
 #!/usr/bin/env python
-import xbmcaddon, os
-__settings__ 	= xbmcaddon.Addon(id='script.xbmal')
-__cwd__		= __settings__.getAddonInfo('path')
+import xbmc, xbmcgui, xbmcaddon, simplejson, os, sys, itertools, math
+import xml.etree.ElementTree as et
+from operator import itemgetter
+
+__settings__    = xbmcaddon.Addon(id='script.xbmal')
+__cwd__         = __settings__.getAddonInfo('path')
+__icon__        = os.path.join(__cwd__, "icon.png")
+__configFile__  = xbmc.translatePath('special://profile/addon_data/script.xbmal/config.xml')
 __scriptname__	= "XBMAL"
 
 BASE_RESOURCE_PATH = xbmc.translatePath( os.path.join(__cwd__, 'resources', 'lib' ) )
 sys.path.append(BASE_RESOURCE_PATH)
 
-import xbmal #Imports everything else we need.
+import myanimelist, xbmal
 
 class MAL():
 	def __init__(self):
@@ -15,11 +20,11 @@ class MAL():
 		self.server = xbmal.server()
 		self.output = xbmal.output()
 
-	def fullUpdate(self, filename):
-	""" Performs a full update of MAL listings """
+	def fullUpdate(self):
+		""" Performs a full update of MAL listings """
 		self.output.notify(__settings__.getLocalizedString(300))
 		showCount = 0;
-		completed = self.parseConfig(filename)
+		completed = self.config.parseConfig()
 		#Get current MAL list (dictionary of dictionaries)
 		malList = a.list()
 		malListIDs = malList.keys()
@@ -34,6 +39,7 @@ class MAL():
 					continue #move on...
 				malID = int(malID)
 				count = 0
+				xbmc.log(str(season), xbmc.LOGNOTICE)
 				for episode in season:
 					if(episode['playcount'] != 0 and episode['label'][0] != 'S'):
 						count = count + 1
@@ -82,12 +88,12 @@ class XBMCPlayer( xbmc.Player ):
 	def onPlayBackEnded( self ):
 		if self.wasVideo:
 			mal = MAL()
-			mal.fullUpdate(__configFile__)
+			mal.fullUpdate()
 
 	def onPlayBackStopped( self ):
 		if self.wasVideo:
 			mal = MAL()
-			mal.fullUpdate(__configFile__)
+			mal.fullUpdate()
 	
 	def onPlayBackStarted( self ):
 		self.wasVideo = False
