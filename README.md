@@ -79,5 +79,4 @@ forward to hearing from you!
 TODO
 ----
 * Make the list look nicer, like [this](http://www.howtogeek.com/wp-content/uploads/2011/10/2011-10-04_152227.jpg).
-* Create a repository for this add-on, along with possible future add-ons (now that I know how to make them...)
 * Maybe, if we're really really lucky, and work on this really hard, get in the official repository?
