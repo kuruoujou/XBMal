@@ -43,8 +43,8 @@ class MAL():
         try:
             self.request.execute(path='account/verify_credentials', authenticate=True)
         except (request.HttpRequestError, request.HttpStatusError):
-            print str(request.HttpRequestError)
-            print str(request.HttpStatusError)
+            #print str(request.HttpRequestError)
+            #print str(request.HttpStatusError)
             return False
         else:
             return True
