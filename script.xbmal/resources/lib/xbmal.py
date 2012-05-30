@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import xbmc, xbmcgui, xbmcaddon, simplejson, os, sys, itertools, math
+import xbmc, xbmcgui, xbmcaddon
+import simplejson, os, sys, itertools, math, jsonrpclib
 import xml.etree.ElementTree as et
 from operator import itemgetter
 
@@ -9,7 +10,7 @@ __cwd__         = __settings__.getAddonInfo('path')
 __icon__        = os.path.join(__cwd__, "icon.png")
 __scriptname__	= "XBMAL"
 __configFile__  = xbmc.translatePath('special://profile/addon_data/script.xbmal/config.xml')
-
+#__configFile__ = "./config.xml"
 BASE_RESOURCE_PATH = xbmc.translatePath( os.path.join(__cwd__, 'resources', 'lib' ) )
 sys.path.append(BASE_RESOURCE_PATH)
 
@@ -62,15 +63,19 @@ class MAL():
 
 	def malLogin(self):
 		""" Attempts to log into mal. Returns a mal.anime instance if successful, false if not."""
-		mal = myanimelist.MAL((str(__settings__.getSetting("malUser")), str(__settings__.getSetting("malPass")), "mal-api.com", "Basic Agent"))
-		if (mal.verify_user() == False):
-			o = output()
-			o.notify(__settings__.getLocalizedString(200))
-			o.log(__settings__.getLocalizedString(200),xbmc.LOGFATAL)
+		if(__settings__.getSetting("malUser") != "" and __settings__.getSetting("malUser") != None and __settings__.getSetting("malPass") != None and __settings__.getSetting("malPass") != ""):
+			mal = myanimelist.MAL((str(__settings__.getSetting("malUser")), str(__settings__.getSetting("malPass")), "mal-api.com", "Basic Agent"))
+			if (mal.verify_user() == False):
+				o = output()
+				o.notify(__settings__.getLocalizedString(200))
+				o.log(__settings__.getLocalizedString(200),xbmc.LOGFATAL)
+				#print("MAL User or pass incorrect.")
+				return False
+			else:   
+				mal.init_anime()
+				return mal.anime
+		else:
 			return False
-		else:   
-			mal.init_anime()
-			return mal.anime
 
 class server():
 	def __init__(self):
@@ -79,10 +84,13 @@ class server():
 	def getXBMCshows(self):
 		""" Gets all of the TV Shows from the XBMC library. Returns a list of shows if successful, empty list if not."""
 		json_query = xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"VideoLibrary.GetEpisodes","params":{"properties":["tvshowid","season","showtitle","playcount"], "sort": {"method":"episode"} }, "id":1}')
+		#json_query = json_server.VideoLibrary.GetEpisodes(properties=["tvshowid","season","showtitle","playcount"],sort={"method":"episode"})
 		json_query = unicode(json_query, 'utf-8', errors='ignore')
 		json_response = simplejson.loads(json_query)
 		if json_response['result'].has_key('episodes'):
 			json_response = json_response['result']['episodes']
+		#if json_query.has_key(u'episodes'):
+		#	json_response = json_query[u'episodes']
 			#the list is sorted by episode number, then tvshow id. Want a seperate list for each tv show. 
 			tvshows = [list(group) for key,group in itertools.groupby(sorted(json_response,key=itemgetter('tvshowid')),key=itemgetter('tvshowid'))]
 		else:

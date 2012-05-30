@@ -1,3 +1,7 @@
+0.3.3
+- Fixed bug with first login, sort of. Should not even attempt to contact mal if blank user or pass
+- Discovered process that needs to be streamlined - multiple restarts of xbmc are required when setting up addon. Needs fixed.
+
 0.3.2
 - Fixed bug where new show in XBMC that was not yet watched would be put into watching instead of plan to watch
 

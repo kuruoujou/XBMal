@@ -67,6 +67,7 @@ class Request():
   
             return response_content
         except:
+            print "Request Error."
             raise HttpRequestError()
   
 # Request Exceptions

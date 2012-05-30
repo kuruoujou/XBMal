@@ -121,7 +121,7 @@ mal = MAL()
 callmal = xbmal.MAL()
 a = callmal.a
 while not xbmc.abortRequested:
-	if (a != None):
+	if (a != False):
 		xbmc.sleep(100)
 	else:
 		trys = 0
