@@ -8,7 +8,7 @@
 import urllib
 import httplib
 import base64
-#import xbmc #For Logging
+import xbmc #For Logging
   
 class Request():
   
@@ -58,7 +58,7 @@ class Request():
                 #print response.status
                 #print response_content
 
-#		xbmc.log("### [%s] - %s" % (__scriptname__,str(response.status) + ": " + str(response_content)), level=xbmc.LOGERROR)
+		xbmc.log("### [%s] - %s" % ("XBMAL",str(response.status) + ": " + str(response_content)), level=xbmc.LOGERROR)
   
                 connection.close()
                 raise HttpStatusError()
