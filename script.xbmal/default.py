@@ -51,7 +51,7 @@ class MAL():
 				else:
 					details = a.details(malID)
 					if details[u'episodes'] is not None:
-						epCount = int(details[malID]['episodes'])
+						epCount = int(details[u'episodes'])
 					else:
 						epCount = 0
 				if malID in malListIDs:
@@ -69,7 +69,7 @@ class MAL():
 						self.output.log(details['title'] + " " + __settings__.getLocalizedString(302), xbmc.LOGNOTICE)
 						a.add({'anime_id':malID, 'status':'completed', 'episodes':count})
 						showCount = showCount + 1
-					elif count != 0 and epCount == 0 or epCount > count:
+					elif (count != 0 and (epCount == 0 or epCount > count)):
 						self.output.log(details['title'] + " " + __settings__.getLocalizedString(303) + " " + str(count), xbmc.LOGNOTICE)
 						a.add({'anime_id':malID, 'status':'watching', 'episodes':count})
 						showCount = showCount + 1
