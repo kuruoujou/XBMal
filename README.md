@@ -86,6 +86,7 @@ forward to hearing from you!
 TODO
 ----
 * Make the list look nicer, like [this](http://www.howtogeek.com/wp-content/uploads/2011/10/2011-10-04_152227.jpg).
+* Support mapping multiple seasons into a single show, i.e. Naruto or Eureka Seven
 * Make the setup script smarter when guessing mappings
   * Ignore anything with 'special', 'extras', etc. in the name
   * Guess seasons appropriately, i.e., season 2 looks for '2', 'II', etc., season 3 looks for '3', 'III', etc.
