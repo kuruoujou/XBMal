@@ -4,7 +4,7 @@ XBMC MyAnimeList Updater
 * Author:	Spencer Julian (<helloThere@spencerjulian.com>)
 * Date:		May, 2012
 * Last Update:	May 27, 2012
-* Version:	0.3.1
+* Version:	0.4
 * Github:	<https://github.com/kuruoujou/XBMal>
 
 This is free software released under version 3 of the GPL License.
@@ -24,18 +24,24 @@ Usage
 You'll first want to backup your MAL account. I'm serious, I can't be sure this won't
 break things, although it works fine for my list.
 
+If you're installing from the repository, skip the next paragraph.
+
 Once you've backed up (you have backed up, right?), copy the `xbmc.script` directory into
 your addons directory. In linux, this is `/home/<username>/.xbmc/addons`, in windows this
 is `C:\Users\<username>\AppData\Roaming\XBMC\addons`, I think. I'm not sure for MAC OS X.
 
-Ok, so you've installed the add on. Start XBMC, or restart if it's already running, and
+Ok, so you've installed the add on. Start XBMC if it's not already running, and
 navigate to Addons -> Enabled Add-ons -> Services -> XBMAL. When you select XBMAL, you
 should see the addon information page. Select 'Configure'.
 
 Now you just need to configure your settings. Set your MAL username and password in the
-appropriate boxes, and then select 'Run Setup'. This can take a while, since it's 
-going through all of your TV shows and trying to find it's listing on MAL. In the meantime,
-go grab a sandwich.
+appropriate boxes.
+
+Settings configured? Ok. Go to the addons screen (whereever all of your installed addons
+are listed, this varies from skin to skin), and select XBMAL. It's the one with the big,
+blue, "MyAnimeList" icon. Once you select it, it will go through your entire XBMC TV show
+library and try to guess the appropriate MAL mapping. This will take a while, particularly
+with a large library, so now is a good time to go grab a sandwich.
 
 Have you eaten your sandwich? Ok. You should now see a list of items that looks similar to
 the following:
@@ -46,8 +52,8 @@ the following:
 	Save above selections
 
 Except it will have your shows instead of the generic strings I used above. Now you have
-to go through each show listed and be sure that the mapping it guessed is correct. Most
-of the time, it probably will be, but there are a few that will almost certainly be wrong.
+to go through each show listed and be sure that the mapping it guessed is correct. About
+half of the time, it probably will be, but there are a few that will almost certainly be wrong.
 Most notably, almost everything with multiple seasons (denoted by S) will not have the
 correct mapping.
 
@@ -66,7 +72,8 @@ update your watching, completed, and plan to watch lists appropriately.
 
 If you add a show to XBMC, you will need to re-run the setup script. However, the setup
 script will read your previous mappings, so you should only need to update the newest items,
-which are typically at the bottom of the list.
+which are typically at the bottom of the list. It will also run much faster, as it won't
+look up all of your shows again. It will only look up the ones it has no clue about.
 
 Questions, Comments, Concerns, Issues
 -------------------------------------
