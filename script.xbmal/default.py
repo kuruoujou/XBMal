@@ -121,7 +121,8 @@ class MainDiag():
 					pDialog.create(__settings__.getLocalizedString(413))
 					lg.config.writeConfig()
 					pDialog.close()
-				xbmc.executescript(__updaterFile__) #If the main script isn't running, run it now.
+				xbmc.executebuiltin("XBMC.RunScript(" +  __updaterFile__ + ", True)")#If the main script isn't running, run it now.
+				lg.output.notify(__settings__.getLocalizedString(414))
 		else:
 			pDialog.close() #and we're done!
 

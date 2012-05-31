@@ -118,7 +118,11 @@ class XBMCPlayer( xbmc.Player ):
 player = XBMCPlayer()
 #monitor = XBMCMonitor()
 mal = MAL()
-callmal = xbmal.MAL()
+o = xbmal.output()
+if (len(sys.argv) > 1):
+	callmal = xbmal.MAL(True)
+else:
+	callmal = xbmal.MAL(False)
 a = callmal.a
 if (a == -1 or a == False):
 	sys.exit(0)

@@ -32,5 +32,6 @@
 	<string id="411">Error retrieving information from MAL</string>
 	<string id="412">Enter MAL Search String</string>
 	<string id="413">Writing new mappings file</string>
+	<string id="414">XBMAL is now listening for videos...</string>
 
 </strings>

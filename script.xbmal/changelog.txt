@@ -1,3 +1,10 @@
+0.4.0
+- Updated setup process, restarts are no longer required when installing XBMAL. The new process is:
+-- Install from repository
+-- Configure username/password
+-- Run from apps screen like any other app
+-- will automatically start with XBMC from now on.
+
 0.3.3
 - Fixed bug with first login, sort of. Should not even attempt to contact mal if blank user or pass
 - Discovered process that needs to be streamlined - multiple restarts of xbmc are required when setting up addon. Needs fixed.

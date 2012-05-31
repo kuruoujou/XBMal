@@ -58,22 +58,26 @@ class XML():
 		self.tree.write(self.xmlFile, encoding="UTF-8", xml_declaration=True)
 
 class MAL():
-	def __init__(self):
-		self.a = self.malLogin()
+	def __init__(self, verifiedLogin=False):
+		self.mal = myanimelist.MAL((str(__settings__.getSetting("malUser")), str(__settings__.getSetting("malPass")), "mal-api.com", "Basic Agent"))
+		if verifiedLogin == True:
+			self.a = self.malLogin()
+		else:
+			self.mal.init_anime()
+			self.a = self.mal.anime
 
 	def malLogin(self):
 		""" Attempts to log into mal. Returns a mal.anime instance if successful, false if not, and -1 if there is no user or pass."""
 		o = output()
 		if(__settings__.getSetting("malUser") != "" and __settings__.getSetting("malUser") != None and __settings__.getSetting("malPass") != None and __settings__.getSetting("malPass") != ""):
-			mal = myanimelist.MAL((str(__settings__.getSetting("malUser")), str(__settings__.getSetting("malPass")), "mal-api.com", "Basic Agent"))
-			if (mal.verify_user() == False):
+			if (self.mal.verify_user() == False):
 				o.notify(__settings__.getLocalizedString(200))
 				o.log(__settings__.getLocalizedString(200),xbmc.LOGFATAL)
 				#print("MAL User or pass incorrect.")
 				return False
 			else:   
-				mal.init_anime()
-				return mal.anime
+				self.mal.init_anime()
+				return self.mal.anime
 		else:
 			o.notify(__settings__.getLocalizedString(201))
 			o.log(__settings__.getLocalizedString(201),xbmc.LOGFATAL)
