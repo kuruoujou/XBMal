@@ -3,7 +3,5 @@
 	<category label="100">
 		<setting id="malUser" type="text" default="" label="101" />
 		<setting id="malPass" type="text" option="hidden" enable="!eq(-1,)" default="" label="102" />
-		<setting type="sep" />
-		<setting id="runSetup" type="action" action="RunScript(special://home/addons/script.xbmal/setup.py)" label="103" />
 	</category>
 </settings>
