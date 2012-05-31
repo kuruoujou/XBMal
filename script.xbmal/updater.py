@@ -122,6 +122,7 @@ callmal = xbmal.MAL()
 a = callmal.a
 if (a == -1 or a == False):
 	sys.exit(0)
-while not xbmc.abortRequested:
-	xbmc.sleep(100)
+else:
+	while not xbmc.abortRequested:
+		xbmc.sleep(100)
 sys.exit(0)
