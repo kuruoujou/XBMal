@@ -62,11 +62,11 @@ class MAL():
 		self.a = self.malLogin()
 
 	def malLogin(self):
-		""" Attempts to log into mal. Returns a mal.anime instance if successful, false if not."""
+		""" Attempts to log into mal. Returns a mal.anime instance if successful, false if not, and -1 if there is no user or pass."""
+		o = output()
 		if(__settings__.getSetting("malUser") != "" and __settings__.getSetting("malUser") != None and __settings__.getSetting("malPass") != None and __settings__.getSetting("malPass") != ""):
 			mal = myanimelist.MAL((str(__settings__.getSetting("malUser")), str(__settings__.getSetting("malPass")), "mal-api.com", "Basic Agent"))
 			if (mal.verify_user() == False):
-				o = output()
 				o.notify(__settings__.getLocalizedString(200))
 				o.log(__settings__.getLocalizedString(200),xbmc.LOGFATAL)
 				#print("MAL User or pass incorrect.")
@@ -75,7 +75,9 @@ class MAL():
 				mal.init_anime()
 				return mal.anime
 		else:
-			return False
+			o.notify(__settings__.getLocalizedString(201))
+			o.log(__settings__.getLocalizedString(201),xbmc.LOGFATAL)
+			return -1
 
 class server():
 	def __init__(self):

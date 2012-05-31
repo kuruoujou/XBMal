@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="script.xbmal" version="0.3.3" name="XBMAL" provider-name="Kuroshi">
+<addon id="script.xbmal" version="0.4" name="XBMAL" provider-name="Kuroshi">
 	<requires>
 		<import addon="xbmc.python" version="2.0" />
 	</requires>
@@ -12,5 +12,5 @@ Notice! In order to use this addon, you need to restart XBMC after installing.</
 		<disclaimer>This is still very experimental. Don't blame me if it messes up XBMC, MAL, or kills your cat. Really. (Released under GPLv3)</disclaimer>
 	</extension>
 	<extension point="xbmc.python.script" library="default.py" ></extension>
-	<extension point="xbmc.service" library="default.py" start="login"></extension>
+	<extension point="xbmc.service" library="updater.py" start="login"></extension>
 </addon>

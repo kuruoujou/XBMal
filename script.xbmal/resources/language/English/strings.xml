@@ -8,6 +8,7 @@
 
 	<!--Notifications for errors and things-->
 	<string id="200">MAL Username or Password Invalid.</string>
+	<string id="201">No MAL Username or Password Setup. Please configure this script and try again.</string>
 
 	<!--Debug Notices-->
 	<string id="300">Beginning MAL Update</string>
