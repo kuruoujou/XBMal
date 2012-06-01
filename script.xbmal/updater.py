@@ -48,6 +48,10 @@ class MAL():
 						epCount = int(malList[malID]['episodes'])
 					else:
 						epCount = 0
+					if malList[malID]['watched_episodes'] is not None:
+						malCount = int(malList[malID]['watched_episodes'])
+					else:
+						malCount = 0
 				else:
 					details = a.details(malID)
 					if details[u'episodes'] is not None:
@@ -60,7 +64,7 @@ class MAL():
 							self.output.log(malList[malID]['title'] + " " + __settings__.getLocalizedString(302), xbmc.LOGNOTICE)
 							a.update(malID, {'status':'completed', 'episodes':count, 'score':malList[malID]['score']})
 							showCount = showCount + 1
-						elif (count != 0 and (epCount == 0 or epCount > count)):
+						elif (count != 0 and (epCount == 0 or epCount > count) and malCount < count):
 							self.output.log(malList[malID]['title'] + " " + __settings__.getLocalizedString(303) + " " + str(count), xbmc.LOGNOTICE)
 							a.update(malID, {'status':'watching', 'episodes':count, 'score':malList[malID]['score']})
 							showCount = showCount + 1
