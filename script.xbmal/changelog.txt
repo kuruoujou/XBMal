@@ -1,3 +1,6 @@
+0.4.2
+- Added quick bug fix - XBMC log does not like unicode. Need workaround, turned off logging in one section for quick bug fix.
+
 0.4.1
 - Fixed bug where if number watched in MAL was greater than XBMC, XBMAL would update anyway causing the number watched in MAL to decrase. XBMAL should only be additive.
 
