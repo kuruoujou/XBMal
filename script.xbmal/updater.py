@@ -61,24 +61,25 @@ class MAL():
 				if malID in malListIDs:
 					if(malList[malID]['watched_status'] == u'watching' or malList[malID]['watched_status'] == u'plan to watch'):
 						if count == epCount and epCount != 0:
-							self.output.log(malList[malID]['title'] + " " + __settings__.getLocalizedString(302), xbmc.LOGNOTICE)
+							#XBMC Log can't handle unicode, need workaround
+							#self.output.log(malList[malID]['title'].encode('ascii','ignore') + " " + __settings__.getLocalizedString(302), xbmc.LOGNOTICE)
 							a.update(malID, {'status':'completed', 'episodes':count, 'score':malList[malID]['score']})
 							showCount = showCount + 1
 						elif (count != 0 and (epCount == 0 or epCount > count) and malCount < count):
-							self.output.log(malList[malID]['title'] + " " + __settings__.getLocalizedString(303) + " " + str(count), xbmc.LOGNOTICE)
+							#self.output.log(malList[malID]['title'].encode('ascii', 'ignore') + " " + __settings__.getLocalizedString(303) + " " + str(count), xbmc.LOGNOTICE)
 							a.update(malID, {'status':'watching', 'episodes':count, 'score':malList[malID]['score']})
 							showCount = showCount + 1
 				else:
 					if count == epCount and epCount != 0:
-						self.output.log(details['title'] + " " + __settings__.getLocalizedString(302), xbmc.LOGNOTICE)
+						#self.output.log(details['title'] + " " + __settings__.getLocalizedString(302), xbmc.LOGNOTICE)
 						a.add({'anime_id':malID, 'status':'completed', 'episodes':count})
 						showCount = showCount + 1
 					elif (count != 0 and (epCount == 0 or epCount > count)):
-						self.output.log(details['title'] + " " + __settings__.getLocalizedString(303) + " " + str(count), xbmc.LOGNOTICE)
+						#self.output.log(details['title'] + " " + __settings__.getLocalizedString(303) + " " + str(count), xbmc.LOGNOTICE)
 						a.add({'anime_id':malID, 'status':'watching', 'episodes':count})
 						showCount = showCount + 1
 					elif count == 0:
-						self.output.log(details['title'] + " " + __settings__.getLocalizedString(304), xbmc.LOGNOTICE)
+						#self.output.log(details['title'] + " " + __settings__.getLocalizedString(304), xbmc.LOGNOTICE)
 						a.add({'anime_id':malID, 'status':'plan to watch', 'episodes':count})
 						showCount = showCount + 1
 		self.output.notify(str(showCount) + " " + __settings__.getLocalizedString(301))
