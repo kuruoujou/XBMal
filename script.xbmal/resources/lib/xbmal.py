@@ -35,8 +35,8 @@ class XML():
 		""" Checks to see if a show is in the config file, based on show id and season, returns the appropriate mal id or false. """
 		if self.tree.findall('show') == []:
 			return False
+		#Python 2.7+
 		try:
-		#python 2.7+
 			for item in self.tree.iterfind('show'):
 				if (item.attrib['xbmcID'] == str(showid)) and (item.attrib['season'] == str(season)):
 					return item.attrib['malID']
