@@ -61,7 +61,11 @@ class XML():
 		""" Writes the configuration xml file."""
 		o = output()
 		o.log(__settings__.getLocalizedString(413), xbmc.LOGNOTICE)
-		self.tree.write(self.xmlFile, encoding="UTF-8", xml_declaration=True)
+		#Python 2.7
+		try:
+			self.tree.write(self.xmlFile, encoding="UTF-8", xml_declaration=True)
+		except:
+			self.tree.write(self.xmlFile, encoding="UTF-8")
 
 class MAL():
 	def __init__(self, verifiedLogin=False):
