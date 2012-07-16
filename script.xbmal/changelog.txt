@@ -1,3 +1,6 @@
+0.4.3
+- Another bug fix, there was an issue with a module being called that was not necessary.
+
 0.4.2
 - Added quick bug fix - XBMC log does not like unicode. Need workaround, turned off logging in one section for quick bug fix.
 
