@@ -35,9 +35,15 @@ class XML():
 		""" Checks to see if a show is in the config file, based on show id and season, returns the appropriate mal id or false. """
 		if self.tree.findall('show') == []:
 			return False
-		for item in self.tree.iterfind('show'):
-			if (item.attrib['xbmcID'] == str(showid)) and (item.attrib['season'] == str(season)):
-				return item.attrib['malID']
+		try:
+		#python 2.7+
+			for item in self.tree.iterfind('show'):
+				if (item.attrib['xbmcID'] == str(showid)) and (item.attrib['season'] == str(season)):
+					return item.attrib['malID']
+		except:
+			for item in self.tree.findall('show'):
+				if (item.attrib['xbmcID'] == str(showid)) and (item.attrib['season'] == str(season)):
+					return item.attrib['malID']	
 		return False
 
 	def replace(self, oldItem, location, item):
