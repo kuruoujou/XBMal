@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import xbmc, xbmcgui, xbmcaddon
-import simplejson, os, sys, itertools, math, jsonrpclib
+import simplejson, os, sys, itertools, math
 import xml.etree.ElementTree as et
 from operator import itemgetter
 
