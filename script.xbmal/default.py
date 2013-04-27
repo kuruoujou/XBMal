@@ -39,7 +39,10 @@ class ListGenerator():
 				if season[0]['season'] == 0: 
 					continue #Don't do "season 0"
 				if self.config.showInConfig(season[0]['tvshowid'], season[0]['season']) == False:
-					self.output.log("Listing Show: " + season[0]['showtitle'], xbmc.LOGNOTICE)
+					try:
+						self.output.log("Listing Show: " + season[0]['showtitle'].encode('ascii', 'ignore'), xbmc.LOGNOTICE)
+					except:
+						self.output.log("The problematic show appears to be the next one, alphebetically. Please send this log along with the name of that show to the developer via github and xbmclogs.com.", xbmc.LOGNOTICE)
 					searchResults = self.a.search(season[0]['showtitle'].encode('ascii', 'ignore'))
 					if (searchResults is False):
 						searchResult = [{'id':'%skip%', 'title':__settings__.getLocalizedString(411)}]
