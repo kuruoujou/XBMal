@@ -1,3 +1,7 @@
+0.4.4
+- Bug fix, possibly introduced with Frodo, some unicode characters caused the list window to crash while generating the list. 
+- Removed unecessary logging
+
 0.4.3
 - Another bug fix, there was an issue with a module being called that was not necessary.
 

@@ -39,7 +39,7 @@ class MAL():
 					continue #move on...
 				malID = int(malID)
 				count = 0
-				xbmc.log(str(season), xbmc.LOGNOTICE)
+				#xbmc.log(str(season), xbmc.LOGNOTICE)
 				for episode in season:
 					if(episode['playcount'] != 0 and episode['label'][0] != 'S'):
 						count = count + 1
