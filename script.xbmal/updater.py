@@ -27,6 +27,9 @@ class MAL():
 		completed = self.config.parseConfig()
 		#Get current MAL list (dictionary of dictionaries)
 		malList = a.list()
+		if malList == False:	
+			self.output.notify(__settings__.getLocalizedString(202))
+			return False
 		malListIDs = malList.keys()
 		tvshows = self.server.getXBMCshows()		
 		for tvshow in tvshows:
@@ -54,6 +57,9 @@ class MAL():
 						malCount = 0
 				else:
 					details = a.details(malID)
+					if details == False:
+						self.output.notify(__settings__.getLocalizedString(202))
+						return False
 					if details[u'episodes'] is not None:
 						epCount = int(details[u'episodes'])
 					else:
@@ -63,24 +69,34 @@ class MAL():
 						if count == epCount and epCount != 0:
 							#XBMC Log can't handle unicode, need workaround
 							#self.output.log(malList[malID]['title'].encode('ascii','ignore') + " " + __settings__.getLocalizedString(302), xbmc.LOGNOTICE)
-							a.update(malID, {'status':'completed', 'episodes':count, 'score':malList[malID]['score']})
+							if a.update(malID, {'status':'completed', 'episodes':count, 'score':malList[malID]['score']}) == False:
+								self.output.notify(__settings__.getLocalizedString(202))
+								return False
 							showCount = showCount + 1
 						elif (count != 0 and (epCount == 0 or epCount > count) and malCount < count):
 							#self.output.log(malList[malID]['title'].encode('ascii', 'ignore') + " " + __settings__.getLocalizedString(303) + " " + str(count), xbmc.LOGNOTICE)
-							a.update(malID, {'status':'watching', 'episodes':count, 'score':malList[malID]['score']})
+							if a.update(malID, {'status':'watching', 'episodes':count, 'score':malList[malID]['score']}) == False:
+								self.output.notify(__settings__.getLocalizedString(202))
+								return False
 							showCount = showCount + 1
 				else:
 					if count == epCount and epCount != 0:
 						#self.output.log(details['title'] + " " + __settings__.getLocalizedString(302), xbmc.LOGNOTICE)
-						a.add({'anime_id':malID, 'status':'completed', 'episodes':count})
+						if a.add({'anime_id':malID, 'status':'completed', 'episodes':count}) == False:
+							self.output.notify(__settings__.getLocalizedString(202))
+							return False
 						showCount = showCount + 1
 					elif (count != 0 and (epCount == 0 or epCount > count)):
 						#self.output.log(details['title'] + " " + __settings__.getLocalizedString(303) + " " + str(count), xbmc.LOGNOTICE)
-						a.add({'anime_id':malID, 'status':'watching', 'episodes':count})
+						if a.add({'anime_id':malID, 'status':'watching', 'episodes':count}) == False:
+							self.output.notify(__settings__.getLocalizedString(202))
+							return False
 						showCount = showCount + 1
 					elif count == 0:
 						#self.output.log(details['title'] + " " + __settings__.getLocalizedString(304), xbmc.LOGNOTICE)
-						a.add({'anime_id':malID, 'status':'plan to watch', 'episodes':count})
+						if a.add({'anime_id':malID, 'status':'plan to watch', 'episodes':count}) == False:
+							self.output.notify(__settings__.getLocalizedString(202))
+							return False
 						showCount = showCount + 1
 		self.output.notify(str(showCount) + " " + __settings__.getLocalizedString(301))
 				
