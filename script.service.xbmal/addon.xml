@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="script.service.xbmal" version="0.4.5" name="XBMAL" provider-name="Kuroshi">
+	<requires>
+		<import addon="xbmc.python" version="2.1.0" />
+		<import addon="script.module.simplejson" />
+		<import addon="script.module.elementtree" />
+	</requires>
+	<extension point="xbmc.python.pluginsource" library="default.py">
+		<proivdes>executable</provides>
+	</extension>
+	<extension point="xbmc.python.script" library="default.py"></extension>
+	<extension point="xbmc.service" library="updater.py" start="login"></extension>
+	<extension point="xbmc.addon.metadata">
+		<language></language>
+		<summary>MAL Updater script for XBMC by kuroshi</summary>
+		<description>XBMAL is a simple updater script for MAL, based on your XBMC library. Currently it only deals with watched and plan to watch shows, and marks shows that are completely watched as complete. It still has a long way to go.</description>
+		<disclaimer>This is still very experimental. Don't blame me if it messes up XBMC, MAL, or kills your cat. Really. (Released under GPLv3)</disclaimer>
+	</extension>
+</addon>
