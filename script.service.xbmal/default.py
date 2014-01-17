@@ -3,10 +3,10 @@ import xbmc, xbmcgui, xbmcaddon, simplejson, os, sys, itertools, math
 import xml.etree.ElementTree as et
 from operator import itemgetter
 
-__settings__    = xbmcaddon.Addon(id='script.xbmal')
+__settings__    = xbmcaddon.Addon(id='script.service.xbmal')
 __cwd__         = __settings__.getAddonInfo('path')
 __icon__        = os.path.join(__cwd__, "icon.png")
-__configFile__  = xbmc.translatePath('special://profile/addon_data/script.xbmal/config.xml')
+__configFile__  = xbmc.translatePath('special://profile/addon_data/script.service.xbmal/config.xml')
 __scriptname__  = "XBMAL Setup"
 __updaterFile__	= xbmc.translatePath( os.path.join(__cwd__, 'updater.py') )
 

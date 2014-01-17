@@ -5,11 +5,11 @@ import simplejson, os, sys, itertools, math
 import xml.etree.ElementTree as et
 from operator import itemgetter
 
-__settings__    = xbmcaddon.Addon(id='script.xbmal')
+__settings__    = xbmcaddon.Addon(id='script.service.xbmal')
 __cwd__         = __settings__.getAddonInfo('path')
 __icon__        = os.path.join(__cwd__, "icon.png")
 __scriptname__	= "XBMAL"
-__configFile__  = xbmc.translatePath('special://profile/addon_data/script.xbmal/config.xml')
+__configFile__  = xbmc.translatePath('special://profile/addon_data/script.service.xbmal/config.xml')
 #__configFile__ = "./config.xml"
 BASE_RESOURCE_PATH = xbmc.translatePath( os.path.join(__cwd__, 'resources', 'lib' ) )
 sys.path.append(BASE_RESOURCE_PATH)
