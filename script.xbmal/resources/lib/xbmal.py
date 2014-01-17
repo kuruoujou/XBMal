@@ -69,7 +69,7 @@ class XML():
 
 class MAL():
 	def __init__(self, verifiedLogin=False):
-		self.mal = myanimelist.MAL((str(__settings__.getSetting("malUser")), str(__settings__.getSetting("malPass")), "mal-api.com", "Basic Agent"))
+		self.mal = myanimelist.MAL((str(__settings__.getSetting("malUser")), str(__settings__.getSetting("malPass")), "mal-api.ramblingahoge.net", "Basic Agent"))
 		if verifiedLogin == True:
 			self.a = self.malLogin()
 		else:

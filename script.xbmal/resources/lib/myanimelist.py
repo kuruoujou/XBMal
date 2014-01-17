@@ -41,7 +41,7 @@ class MAL():
         """Verify user details."""
   
         try:
-            self.request.execute(path='account/verify_credentials', authenticate=True)
+            self.request.execute(path='account/verify_credentials', authenticate=True, ssl=True)
         except (request.HttpRequestError, request.HttpStatusError):
             #print str(request.HttpRequestError)
             #print str(request.HttpStatusError)
@@ -66,7 +66,7 @@ class Anime():
         """Fetch/Download anime list from MAL."""
   
         try:
-            response = self.request.execute(path='animelist/%s' % urllib.quote(self.username), authenticate=True)
+            response = self.request.execute(path='animelist/%s' % urllib.quote(self.username), authenticate=True, ssl=True)
         except (request.HttpRequestError, request.HttpStatusError):
             return False
   
@@ -95,7 +95,7 @@ class Anime():
         """Fetch/Download anime list from MAL."""
   
         try:
-            response = self.request.execute(path='anime/search?q=%s' % urllib.quote(query))
+            response = self.request.execute(path='anime/search?q=%s' % urllib.quote(query), ssl=True)
         except (request.HttpRequestError, request.HttpStatusError):
             return False
   
@@ -121,7 +121,7 @@ class Anime():
         """Add anime to list.  params = (id, status, episodes, score)."""
   
         try:
-            response = self.request.execute(path='animelist/anime', params=params, method='POST', authenticate=True)
+            response = self.request.execute(path='animelist/anime', params=params, method='POST', authenticate=True, ssl=True)
         except (request.HttpRequestError, request.HttpStatusError):
             return False
         else:
@@ -132,7 +132,7 @@ class Anime():
   
         try:
             params['_method'] = 'put'
-            response = self.request.execute(path='animelist/anime/%s' % id, params=params, method='POST', authenticate=True)
+            response = self.request.execute(path='animelist/anime/%s' % id, params=params, method='POST', authenticate=True, ssl=True)
         except (request.HttpRequestError, request.HttpStatusError):
             return False
         else:
@@ -142,7 +142,7 @@ class Anime():
         """Remove anime from the list."""
   
         try:
-            response = self.request.execute(path='animelist/anime/%s' % id, method='DELETE', authenticate=True)
+            response = self.request.execute(path='animelist/anime/%s' % id, method='DELETE', authenticate=True, ssl=True)
         except (request.HttpRequestError, request.HttpStatusError):
             return False
         else:
@@ -154,7 +154,7 @@ class Anime():
         """Get information about an anime."""
   
         try:
-            response = self.request.execute(path='anime/%s?mine=%d' % (id, mine), authenticate=True)
+            response = self.request.execute(path='anime/%s?mine=%d' % (id, mine), authenticate=True, ssl=True)
         except (request.HttpRequestError, request.HttpStatusError):
             return False
         else:

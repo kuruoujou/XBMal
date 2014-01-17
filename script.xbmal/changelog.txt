@@ -1,3 +1,6 @@
+0.4.5
+- After a few github issues (not to mention very infrequent updates on my mal page - limited to shows watched while not at home), started a new mal-api server, as the public one went down. Updated code to point to it.
+
 0.4.4
 - Bug fix, possibly introduced with Frodo, some unicode characters caused the list window to crash while generating the list. 
 - Removed unecessary logging
