@@ -1,3 +1,6 @@
+0.4.6
+- Make season guessing a little bit smarter.
+
 0.4.5
 - After a few github issues (not to mention very infrequent updates on my mal page - limited to shows watched while not at home), started a new mal-api server, as the public one went down. Updated code to point to it.
 - Also changed directory name and the like to match xbmc convention.
