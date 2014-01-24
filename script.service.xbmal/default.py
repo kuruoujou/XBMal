@@ -23,6 +23,18 @@ class ListGenerator():
 		self.output = xbmal.output()
 		self.a = self.mal.a
 
+	def int_to_roman(self, i):
+		numeral_map = zip(
+   		 (1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1),
+	   	 ('M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I')
+		)
+		result = []
+		for integer, numeral in numeral_map:
+			count = int(i / integer)
+			result.append(numeral * count)
+			i -= integer * count
+		return ''.join(result)
+
 	def generateList(self, ret):
 		""" Generates a list of elements to be mapped """
 		returnList = self.config.parseConfig() #returns a list of elements
@@ -45,7 +57,61 @@ class ListGenerator():
 					else:
 						searchResult = searchResults.values()
 					if len(searchResult) != 0:
-						searchResult = searchResult[len(searchResult)-1] #The last item is usually the closest.
+						#Time to play the "Let's guess which title is the episode we're looking for" game!
+						#Step one: If we only have one result, that's probably it. Good for one-season no-ova cases.
+						if len(searchResult) == 1:
+							searchResult = searchResult[0]
+						else:
+							#Well, we have more than one result. Go through them all and find what we're looking for!
+							#Dictionary to map season numbers to japanese names.
+							int_to_jap = {1:'', 2:'kai', 3:'rei'}
+							#First, super-easy mode: Shortest item is probably the one we're looking for.
+							titleSize = 10000000000
+							if season[0]['season'] == 1:
+								for result in searchResult:
+									if len(result['title']) < titleSize:
+										result = searchResult
+										titleSize = len(result['title'])
+								searchResult = result
+							else:
+								for result in searchResult:
+									#Second, easy mode: Check if the number for season is matched in the result title.
+									#If there's a number in the normal title, this will break, but that's moderately rare, so meh.
+									if (str(season[0]['season']) in result['title']):
+										searchResult = result
+										break
+									#Third, moderate mode: Check for roman numerals. Fairly rare, but moderately easy, when you google for a function.
+									#http://code.activestate.com/recipes/81611-roman-numerals/
+									elif (int_to_roman(int(season[0]['season'])) in result['title']):
+										searchResult = result
+										break
+									#Fourth, harder mode: Check for common japanese identifiers (ni, kai, rei, etc.) I don't actually know these,
+									#so I'm using google and guessing. Surprisingly, google isn't horribly useful.
+									elif (int_to_jap[season[0]['season'] in result['title']):
+										searchResult = result
+										break
+									#Fifth, (enough of difficulty settings), check for excess punctuation.
+									elif (string.punctuation in result['title']):
+										count = 0
+										for item in string.punctuation:
+											count = count + result['title'].count(item)
+										#Assume that the amount of punctuation should be one less than the current season number. Not always correct,
+										#but not bad. (I really wish the API would give me season number...)
+										if count = season[0]['season'] - 1:
+											searchResult = result
+											break
+								#Finally, if all else failed (length of searchResult still greater than one), assume the Xth longest
+								#item is the one we're looking for, where X is the season.
+								#This is really a pain (for the processor and me), so hopefully it doesn't need to be done often.
+								if len(searchResult) > 1:
+									#First, get list of all the string lengths, then sort by length.
+									titleLengths = [len(x['title']) for x in searchResult].sort()
+									#Now, the result is the xth item's in that list, where x is the season. Not perfect, but at this point, no idea.
+									length = titleLengths[season[0]['season']]
+									for result in searchResult:
+										if len(result['title']) == length:
+											searchResult = result
+											break
 					else:
 						searchResult = {'id':'%skip%', 'title':__settings__.getLocalizedString(400)}
 					returnList = self.config.add(str(season[0]['tvshowid']), str(season[0]['season']), season[0]['showtitle'], str(searchResult['id']), searchResult['title'])
