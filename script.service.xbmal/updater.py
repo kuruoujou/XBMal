@@ -41,7 +41,7 @@ class MAL():
 				continue #invalid mal id, asked to skip, or no mal id. Carry on...
 			malID = int(malID)
 			count = 0
-			xbmc.log(str(season), xbmc.LOGNOTICE)
+			#xbmc.log(str(season), xbmc.LOGNOTICE)
 			#Get number of watched episodes in XBMC.
 			for episode in season:
 				if(episode['playcount'] != 0 and episode['label'][0] != 'S'):
