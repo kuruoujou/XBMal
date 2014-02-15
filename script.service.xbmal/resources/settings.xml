@@ -4,4 +4,8 @@
 		<setting id="malUser" type="text" default="" label="101" />
 		<setting id="malPass" type="text" option="hidden" enable="!eq(-1,)" default="" label="102" />
 	</category>
+	<category label="104">
+		<setting id="logging" type="bool" default="false" label="105" />
+		<setting id="notifications" type="bool" default="true" label="106" />
+	</category>
 </settings>

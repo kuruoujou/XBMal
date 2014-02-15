@@ -5,6 +5,9 @@
 	<string id="101">Username</string>
 	<string id="102">Password</string>
 	<string id="103">Run Setup</string>
+	<string id="104">XBMC Settings</string>
+	<string id="105">Log to XBMC Logfile</string>
+	<string id="106">Show notifications (errors are always shown)</string>
 
 	<!--Notifications for errors and things-->
 	<string id="200">MAL Username or Password Invalid.</string>
@@ -33,6 +36,6 @@
 	<string id="411">Error retrieving information from MAL</string>
 	<string id="412">Enter MAL Search String</string>
 	<string id="413">Writing new mappings file</string>
-	<string id="414">XBMAL is now listening for videos...</string>
+	<string id="414">XBMAL is now listening for videos</string>
 
 </strings>

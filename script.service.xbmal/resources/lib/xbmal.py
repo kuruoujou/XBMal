@@ -83,7 +83,6 @@ class MAL():
 			if (self.mal.verify_user() == False):
 				o.notify(__settings__.getLocalizedString(200))
 				o.log(__settings__.getLocalizedString(200),xbmc.LOGFATAL)
-				#print("MAL User or pass incorrect.")
 				return False
 			else:   
 				self.mal.init_anime()
@@ -100,13 +99,10 @@ class server():
 	def getXBMCshows(self):
 		""" Gets all of the TV Shows from the XBMC library. Returns a list of shows if successful, empty list if not."""
 		json_query = xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"VideoLibrary.GetEpisodes","params":{"properties":["tvshowid","season","showtitle","playcount"], "sort": {"method":"episode"} }, "id":1}')
-		#json_query = json_server.VideoLibrary.GetEpisodes(properties=["tvshowid","season","showtitle","playcount"],sort={"method":"episode"})
 		json_query = unicode(json_query, 'utf-8', errors='ignore')
 		json_response = simplejson.loads(json_query)
 		if json_response['result'].has_key('episodes'):
 			json_response = json_response['result']['episodes']
-		#if json_query.has_key(u'episodes'):
-		#	json_response = json_query[u'episodes']
 			#the list is sorted by episode number, then tvshow id. Want a seperate list for each tv show. 
 			tvshows = [list(group) for key,group in itertools.groupby(sorted(json_response,key=itemgetter('tvshowid')),key=itemgetter('tvshowid'))]
 		else:
@@ -126,8 +122,10 @@ class output():
 
 	def notify(self, notice):
 		""" Sends a notification to XBMC """
-		xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,notice,10,__icon__))
+		if __settings__.getSetting("notifications") == "true":
+			xbmc.executebuiltin("XBMC.Notification(%s,%s,%s,%s)" % (__scriptname__,notice,10,__icon__))
 
 	def log(self, msg, loglevel):
 		""" Logs into the xbmc.log file """
-		xbmc.log("### [%s] - %s" %(__scriptname__,msg), level=loglevel)
+		if __settings__.getSetting("logging") == "true":
+			xbmc.log("### [%s] - %s" %(__scriptname__,msg), level=loglevel)
