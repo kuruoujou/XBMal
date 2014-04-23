@@ -6,6 +6,7 @@ XBMC MyAnimeList Updater
 * Last Update:	January 23, 2014
 * Version:	0.4.6
 * Github:	<https://github.com/kuruoujou/XBMal>
+* Webpage:	<http://ramblingahoge.net/xbmal>
 
 This is free software released under version 3 of the GPL License.
 
