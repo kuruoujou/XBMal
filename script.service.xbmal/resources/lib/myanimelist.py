@@ -6,6 +6,7 @@
 # License: GPL v3, see the COPYING file for details
 #
 # Modified 5/21/2012 by Spencer Julian
+#          5/04/2014
 # =============================================================================
   
 import os
@@ -132,7 +133,7 @@ class Anime():
   
         try:
             params['_method'] = 'put'
-            response = self.request.execute(path='animelist/anime/%s' % id, params=params, method='POST', authenticate=True, ssl=True)
+            response = self.request.execute(path='animelist/anime/%s' % id, params=params, method='PUT', authenticate=True, ssl=True)
         except (request.HttpRequestError, request.HttpStatusError):
             return False
         else:
