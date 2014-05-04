@@ -4,7 +4,7 @@ XBMC MyAnimeList Updater
 * Author:	Spencer Julian (<helloThere@spencerjulian.com>)
 * Date:		May, 2012
 * Last Update:	May 4, 2014
-* Version:	0.4.7
+* Version:	0.4.8
 * Github:	<https://github.com/kuruoujou/XBMal>
 * Webpage:	<http://ramblingahoge.net/xbmal>
 

@@ -31,7 +31,7 @@ class Request():
   
         headers = {'User-Agent': self.user_agent}
   
-        if method == 'POST':
+        if method == 'POST' or method == 'PUT':
             headers['Content-type'] = 'application/x-www-form-urlencoded'
   
         if params is not None:
