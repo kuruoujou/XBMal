@@ -53,7 +53,7 @@ class Request():
   
             # Raise an exception if the status code is something else then 200
             # and print the status code and response.
-            if response.status != httplib.OK:
+            if response.status != httplib.OK and response.status != httplib.CREATED:
   
                 #print response.status
                 #print response_content
