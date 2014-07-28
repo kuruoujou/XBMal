@@ -130,4 +130,6 @@ class output():
 
 	def log(self, msg, loglevel):
 		""" Logs into the xbmc.log file """
+		if type(msg).__name__ == 'unicode':
+			msg = msg.encode('utf-8')
 		xbmc.log("### [%s] - %s" %(__scriptname__,msg), level=loglevel)
