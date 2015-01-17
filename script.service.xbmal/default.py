@@ -46,7 +46,7 @@ class ListGenerator():
 			ret.update(int(((float(currentShow)/float(totalShows))*100)))
 			seasons = self.server.getXBMCseasons(tvshow)
 			for season in seasons: 
-				self.output.log("Checking " + season[0]['showtitle'] + " Season " + str(season[0]['season']), xbmc.LOGNOTICE)
+				self.output.log(u" ".join(("Checking",season[0]['showtitle'],"Season",str(season[0]['season'])).encode('utf-8'), xbmc.LOGNOTICE)
 				if(ret.iscanceled()):
 					return False
 				if season[0]['season'] == 0: 
@@ -121,7 +121,7 @@ class ListGenerator():
 												break
 					else:
 						searchResult = {'id':'%skip%', 'title':__settings__.getLocalizedString(400)}
-					self.output.log("My guess: " + searchResult['title'].encode('ascii', 'ignore'), xbmc.LOGNOTICE)
+					self.output.log(u" ".join(("My guess:",searchResult['title'])).encode('utf-8'), xbmc.LOGNOTICE)
 					returnList = self.config.add(str(season[0]['tvshowid']), str(season[0]['season']), season[0]['showtitle'], str(searchResult['id']), searchResult['title'])
 		return returnList
 
