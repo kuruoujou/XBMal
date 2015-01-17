@@ -1,3 +1,6 @@
+0.4.10
+- Bug fix, logs were choking on unicode characters. This should theoretically fix it. Hopefully. Maybe...
+
 0.4.9
 - Minor fix for 201 status code error
 

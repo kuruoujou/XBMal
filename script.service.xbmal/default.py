@@ -46,7 +46,7 @@ class ListGenerator():
 			ret.update(int(((float(currentShow)/float(totalShows))*100)))
 			seasons = self.server.getXBMCseasons(tvshow)
 			for season in seasons: 
-				self.output.log(u" ".join(("Checking",season[0]['showtitle'],"Season",str(season[0]['season'])).encode('utf-8'), xbmc.LOGNOTICE)
+				self.output.log(u" ".join(("Checking",season[0]['showtitle'],"Season",str(season[0]['season']))).encode('utf-8'), xbmc.LOGNOTICE)
 				if(ret.iscanceled()):
 					return False
 				if season[0]['season'] == 0: 
