@@ -34,6 +34,10 @@ class MAL():
 		tvshows = self.server.getXBMCshows()		
 		for tvshow in tvshows:
 			seasons = self.server.getXBMCseasons(tvshow)
+			prev_malID = 0
+			sameTVshow = False
+			totalEps = 0
+			total_Eps_lastseason = 0
 			for season in seasons:
 				if season[0]['season'] == 0:
 					continue #Don't do "season 0"
@@ -41,11 +45,21 @@ class MAL():
 				if (malID == -1 or malID == '%skip%' or malID == False):
 					continue #move on...
 				malID = int(malID)
+				#checks if the next season is mapped to the same malID as the previous one
+				if malID == prev_malID:
+					sameTVshow = True
+				prev_malID = malID
 				count = 0
 				#xbmc.log(str(season), xbmc.LOGNOTICE)
 				for episode in season:
+					totalEps += 1
 					if(episode['playcount'] != 0 and episode['label'][0] != 'S'):
 						count = count + 1
+						#if it's the sameTVshow for MAL add the total episodecount to count
+						#this is needed if you added an anime with season numbering (e.g. for scraper convinience) which on MAL doesn't have seasons
+						if sameTVshow == True:
+							count = count + total_Eps_lastseason
+							sameTVshow = False
 				if malID in malListIDs:
 					if malList[malID]['episodes'] is not None:
 						epCount = int(malList[malID]['episodes'])
@@ -98,6 +112,7 @@ class MAL():
 							self.output.notify(__settings__.getLocalizedString(202))
 							return False
 						showCount = showCount + 1
+				total_Eps_lastseason = totalEps
 		self.output.notify(str(showCount) + " " + __settings__.getLocalizedString(301))
 				
 
