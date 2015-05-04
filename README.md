@@ -87,7 +87,7 @@ forward to hearing from you!
 TODO
 ----
 * Make the list look nicer, like [this](http://www.howtogeek.com/wp-content/uploads/2011/10/2011-10-04_152227.jpg).
-* Support mapping multiple seasons into a single show, i.e. Naruto or Eureka Seven
+* ~~Support mapping multiple seasons into a single show, i.e. Naruto or Eureka Seven~~ Done in PR #18! Thanks iraturus.
 * When item is removed from XBMC library, remove from XML file (perhaps try to check with library cleaned?)
 * Invert the list so that newest items are on top
 * Make the setup script smarter when guessing mappings
