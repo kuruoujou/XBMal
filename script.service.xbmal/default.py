@@ -130,10 +130,17 @@ class ListGenerator():
 		returnList = []
 		if searchString == False or searchString == "":
 			searchString = item.get('xbmcTitle')
-		for result in self.a.search(searchString.encode('ascii','ignore')).values():
-			returnList.append(et.Element('show', attrib={'xbmcID':item.get('xbmcID'), 'season':item.get('season'), 'xbmcTitle':item.get('xbmcTitle'), 'malID':str(result['id']), 'malTitle':result['title']}))
-		returnList.append(et.Element('show', attrib={'xbmcID':item.get('xbmcID'), 'xbmcTitle':item.get('xbmcTitle'), 'season':item.get('season'), 'malID':'%skip%', 'malTitle':__settings__.getLocalizedString(402)}))
-		return returnList
+			searchResults = self.a.search(searchString.encode('ascii','ignore'))
+		else:
+			searchResults = self.a.search(searchString.encode('ascii','ignore'))
+		#check if searchResults is not false to prevent error
+		if searchResults is not False:
+			for result in searchResults.values():
+				returnList.append(et.Element('show', attrib={'xbmcID':item.get('xbmcID'), 'season':item.get('season'), 'xbmcTitle':item.get('xbmcTitle'), 'malID':str(result['id']), 'malTitle':result['title']}))
+			returnList.append(et.Element('show', attrib={'xbmcID':item.get('xbmcID'), 'xbmcTitle':item.get('xbmcTitle'), 'season':item.get('season'), 'malID':'%skip%', 'malTitle':__settings__.getLocalizedString(402)}))
+			return returnList
+		else:
+			return None
 
 	def generateSelection(self, mappings, fullList=True):
 		""" Takes a list of elements and generates a readable list in the same order. """
@@ -175,10 +182,8 @@ class MainDiag():
 					if (selectedItem != len(mappings) and selectedItem != -1): #-1 is back, last item is write
 						#Perform the MAL search for the XBMC title, and create a dialog of all the results.
 						possibleReplacements = lg.generateFix(mappings[selectedItem])
-						newResult = ListDialog.select(__settings__.getLocalizedString(406) + " " + mappings[selectedItem].get('xbmcTitle'), lg.generateSelection(possibleReplacements, False))
-						if (newResult != len(possibleReplacements) and newResult != -1): #-1 is back, last item is manual
-							mappings = lg.config.replace(mappings[selectedItem],selectedItem,possibleReplacements[newResult])
-						elif (newResult != -1):
+						#if there's no possible replacement only offer manual search
+						if possibleReplacements is None:
 							while 1:
 								#If it's manual, keep looping until they select something or give up (none or back)
 								possibleReplacements = lg.generateFix(mappings[selectedItem], self.manualSearch())
@@ -188,6 +193,20 @@ class MainDiag():
 									break
 								elif (newResult == -1):
 										break
+						else:
+							newResult = ListDialog.select(__settings__.getLocalizedString(406) + " " + mappings[selectedItem].get('xbmcTitle'), lg.generateSelection(possibleReplacements, False))
+							if (newResult != len(possibleReplacements) and newResult != -1): #-1 is back, last item is manual
+								mappings = lg.config.replace(mappings[selectedItem],selectedItem,possibleReplacements[newResult])
+							elif (newResult != -1):
+								while 1:
+									#If it's manual, keep looping until they select something or give up (none or back)
+									possibleReplacements = lg.generateFix(mappings[selectedItem], self.manualSearch())
+									newResult = ListDialog.select(__settings__.getLocalizedString(406) + " " + mappings[selectedItem].get('xbmcTitle'), lg.generateSelection(possibleReplacements, False))
+									if (newResult != len(possibleReplacements) and newResult != -1):
+										mappings = lg.config.replace(mappings[selectedItem],selectedItem,possibleReplacements[newResult])
+										break
+									elif (newResult == -1):
+											break
 					if(selectedItem == -1): #In this case, we backed out of the main select dialog
 						doWrite = False
 						break
