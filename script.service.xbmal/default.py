@@ -171,6 +171,7 @@ class MainDiag():
 			pDialog.close()
 			#if mappings is false, then something went wrong in generateList. Exit.
 			if mappings != False:
+				mappings.reverse()
 				selectedItem = 0
 				doWrite = True
 				#We're looping until the final selection is made - either "back" or the write command.

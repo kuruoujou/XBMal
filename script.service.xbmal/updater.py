@@ -36,6 +36,7 @@ class MAL():
 			seasons = self.server.getXBMCseasons(tvshow)
 			prev_malID = 0
 			sameTVshow = False
+			showUpdate = False
 			totalEps = 0
 			total_Eps_lastseason = 0
 			for season in seasons:
@@ -86,33 +87,35 @@ class MAL():
 							if a.update(malID, {'status':'completed', 'episodes':count, 'score':malList[malID]['score']}) == False:
 								self.output.notify(__settings__.getLocalizedString(202))
 								return False
-							showCount = showCount + 1
+							showUpdate = True
 						elif (count != 0 and (epCount == 0 or epCount > count) and malCount < count):
 							#self.output.log(malList[malID]['title'].encode('ascii', 'ignore') + " " + __settings__.getLocalizedString(303) + " " + str(count), xbmc.LOGNOTICE)
 							if a.update(malID, {'status':'watching', 'episodes':count, 'score':malList[malID]['score']}) == False:
 								self.output.notify(__settings__.getLocalizedString(202))
 								return False
-							showCount = showCount + 1
+							showUpdate = True
 				else:
 					if count == epCount and epCount != 0:
 						#self.output.log(details['title'] + " " + __settings__.getLocalizedString(302), xbmc.LOGNOTICE)
 						if a.add({'anime_id':malID, 'status':'completed', 'episodes':count}) == False:
 							self.output.notify(__settings__.getLocalizedString(202))
 							return False
-						showCount = showCount + 1
+						showUpdate = True
 					elif (count != 0 and (epCount == 0 or epCount > count)):
 						#self.output.log(details['title'] + " " + __settings__.getLocalizedString(303) + " " + str(count), xbmc.LOGNOTICE)
 						if a.add({'anime_id':malID, 'status':'watching', 'episodes':count}) == False:
 							self.output.notify(__settings__.getLocalizedString(202))
 							return False
-						showCount = showCount + 1
+						showUpdate = True
 					elif count == 0:
 						#self.output.log(details['title'] + " " + __settings__.getLocalizedString(304), xbmc.LOGNOTICE)
 						if a.add({'anime_id':malID, 'status':'plan to watch', 'episodes':count}) == False:
 							self.output.notify(__settings__.getLocalizedString(202))
 							return False
-						showCount = showCount + 1
+						showUpdate = True
 				total_Eps_lastseason = totalEps
+			if showUpdate == True:
+				showCount += 1
 		self.output.notify(str(showCount) + " " + __settings__.getLocalizedString(301))
 				
 
