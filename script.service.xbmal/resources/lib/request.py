@@ -3,11 +3,11 @@
 #
 # Copyright (c) 2009 Frank Smit (FSX)
 # License: GPL v3, see the COPYING file for details
+# Rewritten using requests library for SNI support, Spencer Julian, 2015
 # =============================================================================
   
+import requests
 import urllib
-import httplib
-import base64
 #import xbmc #For Logging
   
 class Request():
@@ -33,47 +33,20 @@ class Request():
   
         if method == 'POST' or method == 'PUT':
             headers['Content-type'] = 'application/x-www-form-urlencoded'
-  
-        if params is not None:
-            params = urllib.urlencode(params)
-  
-        if authenticate:
-            encoded = base64.encodestring('%s:%s' % (self.username, self.password))[:-1]
-            headers['Authorization'] = 'Basic %s' % encoded
-  
-        if ssl:
-            connection = httplib.HTTPSConnection(self.host)
-        else:
-            connection = httplib.HTTPConnection(self.host)
-  
-        try:
-            request = connection.request(method.upper(), '/' + path, params, headers)
-            response = connection.getresponse()
-            response_content = response.read()
-  
-            # Raise an exception if the status code is something else then 200
-            # and print the status code and response.
-            if response.status != httplib.OK and response.status != httplib.CREATED:
-  
-                #print response.status
-                #print response_content
 
-#		xbmc.log("### [%s] - %s" % ("XBMAL",str(response.status) + ": " + str(response_content)), level=xbmc.LOGERROR)
-  
-                connection.close()
-                raise HttpStatusError()
-  
-            connection.close()
-  
-            return response_content
-        except:
-            print "Request Error."
-            raise HttpRequestError()
-  
-# Request Exceptions
-  
-class HttpRequestError(Exception):
-    pass
-  
+        protocol = "https://" if ssl else "http://"
+
+        if authenticate:
+            response = requests.request(method.upper(), protocol + self.host + '/' + path, params=params, headers=headers, auth=(self.username, self.password))
+        else:
+            response = requests.request(method.upper(), protocol + self.host + '/' + path, params=params, headers=headers)
+
+	if 200 <= response.status < 300:
+            response_content = response.text()
+        else:
+            raise HttpStatusError()
+          
+        return response_content
+          
 class HttpStatusError(Exception):
     pass
