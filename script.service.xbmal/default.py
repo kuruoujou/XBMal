@@ -190,21 +190,24 @@ class MainDiag():
 								possibleReplacements = lg.generateFix(mappings[selectedItem], self.manualSearch())
 								newResult = ListDialog.select(__settings__.getLocalizedString(406) + " " + mappings[selectedItem].get('xbmcTitle'), lg.generateSelection(possibleReplacements, False))
 								if (newResult != len(possibleReplacements) and newResult != -1):
-									mappings = lg.config.replace(mappings[selectedItem],selectedItem,possibleReplacements[newResult])
+									mappings = lg.config.replace(mappings[selectedItem],len(mappings)-1-selectedItem,possibleReplacements[newResult])
+									mappings.reverse()
 									break
 								elif (newResult == -1):
 										break
 						else:
 							newResult = ListDialog.select(__settings__.getLocalizedString(406) + " " + mappings[selectedItem].get('xbmcTitle'), lg.generateSelection(possibleReplacements, False))
 							if (newResult != len(possibleReplacements) and newResult != -1): #-1 is back, last item is manual
-								mappings = lg.config.replace(mappings[selectedItem],selectedItem,possibleReplacements[newResult])
+								mappings = lg.config.replace(mappings[selectedItem],len(mappings)-1-selectedItem,possibleReplacements[newResult])
+								mappings.reverse()
 							elif (newResult != -1):
 								while 1:
 									#If it's manual, keep looping until they select something or give up (none or back)
 									possibleReplacements = lg.generateFix(mappings[selectedItem], self.manualSearch())
 									newResult = ListDialog.select(__settings__.getLocalizedString(406) + " " + mappings[selectedItem].get('xbmcTitle'), lg.generateSelection(possibleReplacements, False))
 									if (newResult != len(possibleReplacements) and newResult != -1):
-										mappings = lg.config.replace(mappings[selectedItem],selectedItem,possibleReplacements[newResult])
+										mappings = lg.config.replace(mappings[selectedItem],len(mappings)-1-selectedItem,possibleReplacements[newResult])
+										mappings.reverse()
 										break
 									elif (newResult == -1):
 											break
