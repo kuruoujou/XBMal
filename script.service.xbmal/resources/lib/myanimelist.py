@@ -43,9 +43,7 @@ class MAL():
   
         try:
             self.request.execute(path='account/verify_credentials', authenticate=True, ssl=True)
-        except (request.HttpRequestError, request.HttpStatusError):
-            #print str(request.HttpRequestError)
-            #print str(request.HttpStatusError)
+        except (request.HttpStatusError):
             return False
         else:
             return True
@@ -68,7 +66,7 @@ class Anime():
   
         try:
             response = self.request.execute(path='animelist/%s' % urllib.quote(self.username), authenticate=True, ssl=True)
-        except (request.HttpRequestError, request.HttpStatusError):
+        except (request.HttpStatusError):
             return False
   
         # All the data goes into a new dict
@@ -97,7 +95,7 @@ class Anime():
   
         try:
             response = self.request.execute(path='anime/search?q=%s' % urllib.quote(query), ssl=True)
-        except (request.HttpRequestError, request.HttpStatusError):
+        except (request.HttpStatusError):
             return False
   
         # All the data goes into a new dict to keep because the API
@@ -123,7 +121,7 @@ class Anime():
   
         try:
             response = self.request.execute(path='animelist/anime', params=params, method='POST', authenticate=True, ssl=True)
-        except (request.HttpRequestError, request.HttpStatusError):
+        except (request.HttpStatusError):
             return False
         else:
             return response
@@ -134,7 +132,7 @@ class Anime():
         try:
             params['_method'] = 'put'
             response = self.request.execute(path='animelist/anime/%s' % id, params=params, method='PUT', authenticate=True, ssl=True)
-        except (request.HttpRequestError, request.HttpStatusError):
+        except (request.HttpStatusError):
             return False
         else:
             return response
@@ -144,7 +142,7 @@ class Anime():
   
         try:
             response = self.request.execute(path='animelist/anime/%s' % id, method='DELETE', authenticate=True, ssl=True)
-        except (request.HttpRequestError, request.HttpStatusError):
+        except (request.HttpStatusError):
             return False
         else:
             # Note: Do 'return response' to return the details of the removed anime.
@@ -156,7 +154,7 @@ class Anime():
   
         try:
             response = self.request.execute(path='anime/%s?mine=%d' % (id, mine), authenticate=True, ssl=True)
-        except (request.HttpRequestError, request.HttpStatusError):
+        except (request.HttpStatusError):
             return False
         else:
             return json.loads(response)

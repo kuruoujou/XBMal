@@ -5,7 +5,7 @@
 # License: GPL v3, see the COPYING file for details
 # Rewritten using requests library for SNI support, Spencer Julian, 2015
 # =============================================================================
-  
+
 import requests
 import urllib
 #import xbmc #For Logging
