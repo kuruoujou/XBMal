@@ -41,8 +41,8 @@ class Request():
         else:
             response = requests.request(method.upper(), protocol + self.host + '/' + path, params=params, headers=headers)
 
-	if 200 <= response.status < 300:
-            response_content = response.text()
+	if 200 <= response.status_code < 300:
+            response_content = response.text
         else:
             raise HttpStatusError()
           
